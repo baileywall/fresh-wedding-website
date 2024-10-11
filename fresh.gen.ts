@@ -10,7 +10,7 @@ import * as $details from "./routes/details.tsx";
 import * as $faq from "./routes/faq.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $photos from "./routes/photos.tsx";
-import * as $Counter from "./islands/Counter.tsx";
+import * as $Hamburger from "./islands/Hamburger.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -25,7 +25,7 @@ const manifest = {
     "./routes/photos.tsx": $photos,
   },
   islands: {
-    "./islands/Counter.tsx": $Counter,
+    "./islands/Hamburger.tsx": $Hamburger,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;
