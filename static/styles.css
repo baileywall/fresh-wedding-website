@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: "Qwitcher";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(QwitcherGrypen-Regular.ttf);
+  }
+
+  @font-face {
+    font-family: "Qwitcher";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url(QwitcherGrypen-Bold.ttf);
+  }
+
+  @font-face {
+    font-family: "AnticSlab";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(AnticSlab-Regular.ttf);
+  }
+}
