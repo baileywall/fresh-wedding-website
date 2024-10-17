@@ -1,6 +1,6 @@
 export default function Details() {
   return (
-    <main class="mx-auto mt-32 md:px-5 flex flex-col gap-8 items-center">
+    <main class="mt-32 flex flex-col gap-8 items-center">
       <h1 class="font-qwitcher text-8xl">Weekend Timeline</h1>
       <p class="font-antic text-center px-8 md:px-64">
         We are so excited to celebrate the start of our new chapter with all of
@@ -16,7 +16,7 @@ export default function Details() {
       </p>
       <image
         src="/timeline.png"
-        class="object-cover object-top h-full w-full md:px-48"
+        class="object-cover object-top h-full w-full"
       />
     </main>
   );
