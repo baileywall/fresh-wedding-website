@@ -7,7 +7,7 @@
     font-family: "Qwitcher";
     font-style: normal;
     font-weight: 400;
-    font-display: swap;
+    font-display: block;
     src: url(QwitcherGrypen-Regular.ttf);
   }
 
@@ -15,7 +15,7 @@
     font-family: "Qwitcher";
     font-style: normal;
     font-weight: 600;
-    font-display: swap;
+    font-display: block;
     src: url(QwitcherGrypen-Bold.ttf);
   }
 
@@ -23,7 +23,7 @@
     font-family: "AnticSlab";
     font-style: normal;
     font-weight: 400;
-    font-display: swap;
+    font-display: block;
     src: url(AnticSlab-Regular.ttf);
   }
 }

@@ -1,7 +1,7 @@
 export default function Details() {
   return (
-    <main class="mt-32 flex flex-col gap-8 items-center">
-      <h1 class="font-qwitcher text-8xl">Weekend Timeline</h1>
+    <main class="flex flex-col gap-8 items-center mt-16">
+      <h1 class="md:hidden font-qwitcher text-8xl">Details</h1>
       <p class="font-antic text-center px-8 md:px-64">
         We are so excited to celebrate the start of our new chapter with all of
         our family and friends! Our goal is to maximize the amount of time we

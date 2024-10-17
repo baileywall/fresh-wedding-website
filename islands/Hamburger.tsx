@@ -1,9 +1,7 @@
 import { useState } from "preact/hooks";
-import { Button } from "../components/Button.tsx";
+import { NavItem } from "../components/NavItem.tsx";
 
-interface HamburgerProps {}
-
-export default function Hamburger(props: HamburgerProps) {
+export default function Hamburger(props: { pathname: string }) {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <>
@@ -19,15 +17,18 @@ export default function Hamburger(props: HamburgerProps) {
         hidden={!isOpen}
       >
         <nav class="flex flex-col items-center justify-around h-80">
-          <a class="font-antic text-3xl" href="/details">
+          <NavItem pathname={props.pathname} navPath="/">
+            Home
+          </NavItem>
+          <NavItem pathname={props.pathname} navPath="/details">
             Details
-          </a>
-          <a class="font-antic text-3xl" href="/faq">
+          </NavItem>
+          <NavItem pathname={props.pathname} navPath="/faq">
             FAQ
-          </a>
-          <a class="font-antic text-3xl" href="/photos">
+          </NavItem>
+          <NavItem pathname={props.pathname} navPath="/photos">
             Photos
-          </a>
+          </NavItem>
         </nav>
       </nav>
     </>

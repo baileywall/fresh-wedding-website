@@ -1,7 +1,7 @@
 export default function FAQ() {
   return (
-    <main class="mx-auto mt-32 px-5 flex flex-col gap-8 items-center">
-      <h1 class="font-qwitcher text-8xl">FAQ</h1>
+    <main class="mx-auto mt-16 px-5 flex flex-col gap-8 items-center">
+      <h1 class="md:hidden font-qwitcher text-8xl">FAQ</h1>
       <p class="font-antic text-4xl text-center px-8 md:px-64">
         Where do we stay and when should we book?
       </p>
