@@ -5,7 +5,7 @@ import Hamburger from "../islands/Hamburger.tsx";
 export default function Layout({ Component, url }: PageProps) {
   // do something with state here
   return (
-    <div class="layout bg-amber-50">
+    <div class="layout bg-amber-50 h-screen">
       <nav class="hidden md:flex w-full top-0 z-20 flex-col h-100 items-center bg-amber-50">
         <a class="font-qwitcher text-8xl py-10" href="/">
           Bailey + Colton
