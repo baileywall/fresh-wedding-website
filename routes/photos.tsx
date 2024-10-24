@@ -3,7 +3,7 @@ import { Photo } from "../components/Photo.tsx";
 export default function Photos() {
   return (
     <main class="mx-auto mt-16 px-5 pb-5 flex flex-col gap-8 items-center">
-      <h1 class="md:hidden font-qwitcher text-8xl">Photos</h1>
+      <h1 class="md:hidden font-script text-8xl">Photos</h1>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Photo alt="19_04 first_hike" src="/photos/bc_1.jpeg" />
         <Photo alt="19_04 first_yosemite_waterfall" src="/photos/bc_2.jpeg" />

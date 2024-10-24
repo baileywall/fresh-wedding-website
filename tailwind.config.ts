@@ -8,8 +8,11 @@ export default {
         sans: ["ui-sans-serif"],
         serif: ["ui-serif"],
         mono: ["ui-monospace"],
-        qwitcher: ["Qwitcher"],
-        antic: ["AnticSlab"],
+        merriweather: ["Merriweather"],
+        script: ["DancingScript"],
+      },
+      colors: {
+        "tree-green": "#12340E",
       },
     },
   },

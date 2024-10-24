@@ -5,9 +5,9 @@ import Hamburger from "../islands/Hamburger.tsx";
 export default function Layout({ Component, url }: PageProps) {
   // do something with state here
   return (
-    <div class="layout bg-amber-50 h-screen">
+    <div class="layout bg-amber-50 font-merriweather text-tree-green min-h-screen">
       <nav class="hidden md:flex w-full top-0 z-20 flex-col h-100 items-center bg-amber-50">
-        <a class="font-qwitcher text-8xl py-10" href="/">
+        <a class="font-script text-8xl py-10" href="/">
           Bailey + Colton
         </a>
         <nav class="flex gap-8">
@@ -20,6 +20,12 @@ export default function Layout({ Component, url }: PageProps) {
           <NavItem pathname={url.pathname} navPath="/faq">
             FAQ
           </NavItem>
+          <NavItem pathname={url.pathname} navPath="/rsvp">
+            RSVP
+          </NavItem>
+          <NavItem pathname={url.pathname} navPath="/registry">
+            Registry
+          </NavItem>
           <NavItem pathname={url.pathname} navPath="/photos">
             Photos
           </NavItem>
@@ -28,7 +34,7 @@ export default function Layout({ Component, url }: PageProps) {
       <nav class="flex md:hidden w-full top-0 z-20 justify-between h-20 items-center bg-amber-50">
         <div class="flex items-center gap-4 ml-4">
           <image src="ring.png" class="w-20" />
-          <a class="font-antic text-2xl" href="/">
+          <a class="font-script text-4xl" href="/">
             B + C
           </a>
         </div>

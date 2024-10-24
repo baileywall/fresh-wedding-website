@@ -4,26 +4,66 @@
 
 @layer base {
   @font-face {
-    font-family: "Qwitcher";
+    font-family: "Merriweather";
     font-style: normal;
     font-weight: 400;
     font-display: block;
-    src: url(QwitcherGrypen-Regular.ttf);
+    src: url(Merriweather-Regular.ttf);
   }
 
   @font-face {
-    font-family: "Qwitcher";
+    font-family: "Merriweather";
+    font-style: normal;
+    font-weight: 700;
+    font-display: block;
+    src: url(Merriweather-Bold.ttf);
+  }
+
+  @font-face {
+    font-family: "Merriweather";
+    font-style: italic;
+    font-weight: 400;
+    font-display: block;
+    src: url(Merriweather-Italic.ttf);
+  }
+
+  @font-face {
+    font-family: "Merriweather";
+    font-style: italic;
+    font-weight: 700;
+    font-display: block;
+    src: url(Merriweather-BoldItalic.ttf);
+  }
+
+  @font-face {
+    font-family: "DancingScript";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url(DancingScript-Regular.ttf);
+  }
+
+  @font-face {
+    font-family: "DancingScript";
+    font-style: normal;
+    font-weight: 500;
+    font-display: block;
+    src: url(DancingScript-Medium.ttf);
+  }
+
+  @font-face {
+    font-family: "DancingScript";
     font-style: normal;
     font-weight: 600;
     font-display: block;
-    src: url(QwitcherGrypen-Bold.ttf);
+    src: url(DancingScript-SemiBold.ttf);
   }
 
   @font-face {
-    font-family: "AnticSlab";
+    font-family: "DancingScript";
     font-style: normal;
-    font-weight: 400;
+    font-weight: 700;
     font-display: block;
-    src: url(AnticSlab-Regular.ttf);
+    src: url(DancingScript-Bold.ttf);
   }
 }
