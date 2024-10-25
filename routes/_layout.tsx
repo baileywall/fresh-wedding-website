@@ -34,7 +34,7 @@ export default function Layout({ Component, url }: PageProps) {
       <nav class="flex md:hidden w-full top-0 z-20 justify-between h-20 items-center bg-amber-50">
         <div class="flex items-center gap-4 ml-4">
           <image src="ring.png" class="w-20" />
-          <a class="font-script text-4xl" href="/">
+          <a class="text-2xl" href="/">
             B + C
           </a>
         </div>

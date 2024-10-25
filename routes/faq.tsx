@@ -2,6 +2,7 @@ export default function FAQ() {
   return (
     <main class="mx-auto mt-16 px-5 flex flex-col gap-8 items-center">
       <h1 class="md:hidden font-script text-8xl">FAQ</h1>
+      <image src="/food.png" class="object-cover object-top w-full lg:w-2/4" />
       <p class="text-4xl text-center px-8 lg:px-64">
         Where do we stay and when should we book?
       </p>

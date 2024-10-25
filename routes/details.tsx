@@ -2,6 +2,10 @@ export default function Details() {
   return (
     <main class="flex flex-col gap-8 items-center mt-16">
       <h1 class="md:hidden font-script text-8xl">Details</h1>
+      <image
+        src="/wedding.png"
+        class="object-cover object-top w-full lg:w-2/4"
+      />
       <p class="text-center px-8 lg:px-64">
         We are so excited to celebrate the start of our new chapter with all of
         our family and friends! Our goal is to maximize the amount of time we
