@@ -2,37 +2,33 @@
 // This file SHOULD be checked into source version control.
 // This file is automatically updated during development when running `dev.ts`.
 
-import * as $_index_ from "./routes/[index].tsx";
+import * as $_404 from "./routes/_404.tsx";
+import * as $_app from "./routes/_app.tsx";
+import * as $_layout from "./routes/_layout.tsx";
+import * as $details from "./routes/details.tsx";
+import * as $faq from "./routes/faq.tsx";
 import * as $index from "./routes/index.tsx";
-import * as $old_404 from "./routes/old/_404.tsx";
-import * as $old_app from "./routes/old/_app.tsx";
-import * as $old_layout from "./routes/old/_layout.tsx";
-import * as $old_details from "./routes/old/details.tsx";
-import * as $old_faq from "./routes/old/faq.tsx";
-import * as $old_index from "./routes/old/index.tsx";
-import * as $old_photos from "./routes/old/photos.tsx";
-import * as $old_registry from "./routes/old/registry.tsx";
-import * as $old_rsvp_group_id_event_id_ from "./routes/old/rsvp/[group_id]/[event_id].tsx";
-import * as $old_rsvp_group_id_index from "./routes/old/rsvp/[group_id]/index.tsx";
-import * as $old_rsvp_index from "./routes/old/rsvp/index.tsx";
+import * as $photos from "./routes/photos.tsx";
+import * as $registry from "./routes/registry.tsx";
+import * as $rsvp_group_id_event_id_ from "./routes/rsvp/[group_id]/[event_id].tsx";
+import * as $rsvp_group_id_index from "./routes/rsvp/[group_id]/index.tsx";
+import * as $rsvp_index from "./routes/rsvp/index.tsx";
 import * as $Hamburger from "./islands/Hamburger.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
   routes: {
-    "./routes/[index].tsx": $_index_,
+    "./routes/_404.tsx": $_404,
+    "./routes/_app.tsx": $_app,
+    "./routes/_layout.tsx": $_layout,
+    "./routes/details.tsx": $details,
+    "./routes/faq.tsx": $faq,
     "./routes/index.tsx": $index,
-    "./routes/old/_404.tsx": $old_404,
-    "./routes/old/_app.tsx": $old_app,
-    "./routes/old/_layout.tsx": $old_layout,
-    "./routes/old/details.tsx": $old_details,
-    "./routes/old/faq.tsx": $old_faq,
-    "./routes/old/index.tsx": $old_index,
-    "./routes/old/photos.tsx": $old_photos,
-    "./routes/old/registry.tsx": $old_registry,
-    "./routes/old/rsvp/[group_id]/[event_id].tsx": $old_rsvp_group_id_event_id_,
-    "./routes/old/rsvp/[group_id]/index.tsx": $old_rsvp_group_id_index,
-    "./routes/old/rsvp/index.tsx": $old_rsvp_index,
+    "./routes/photos.tsx": $photos,
+    "./routes/registry.tsx": $registry,
+    "./routes/rsvp/[group_id]/[event_id].tsx": $rsvp_group_id_event_id_,
+    "./routes/rsvp/[group_id]/index.tsx": $rsvp_group_id_index,
+    "./routes/rsvp/index.tsx": $rsvp_index,
   },
   islands: {
     "./islands/Hamburger.tsx": $Hamburger,
