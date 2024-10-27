@@ -1,6 +1,6 @@
 import { PageProps } from "$fresh/server.ts";
-import { NavItem } from "../components/NavItem.tsx";
-import Hamburger from "../islands/Hamburger.tsx";
+import { NavItem } from "../../components/NavItem.tsx";
+import Hamburger from "../../islands/Hamburger.tsx";
 
 export default function Layout({ Component, url }: PageProps) {
   // do something with state here
