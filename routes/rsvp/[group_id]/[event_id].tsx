@@ -1,7 +1,7 @@
 import type { Handlers, PageProps } from "$fresh/server.ts";
-import { connection } from "../../../../db.ts";
-import type { PERSON, RSVP } from "../../../../types.ts";
-import { ELEMENT_TO_NUMBER } from "../../../../util.ts";
+import { connection } from "../../../db.ts";
+import type { PERSON, RSVP } from "../../../types.ts";
+import { ELEMENT_TO_NUMBER } from "../../../util.ts";
 
 interface Data {
   results: (PERSON & RSVP)[];

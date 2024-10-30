@@ -1,4 +1,4 @@
-import { Photo } from "../../components/Photo.tsx";
+import { Photo } from "../components/Photo.tsx";
 
 export default function Photos() {
   return (
