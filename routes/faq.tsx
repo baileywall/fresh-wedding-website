@@ -1,9 +1,12 @@
+import { MainWrapper } from "../components/MainWrapper.tsx";
+import { PageHeader } from "../components/PageHeader.tsx";
+
 export default function FAQ() {
   return (
-    <main class="mx-auto mt-16 px-5 flex flex-col gap-8 items-center">
-      <h1 class="md:hidden font-script text-8xl">FAQ</h1>
+    <MainWrapper>
+      <PageHeader>FAQ</PageHeader>
       <image src="/food.png" class="object-cover object-top w-full lg:w-2/4" />
-      <p class="text-4xl text-center px-8 lg:px-64">
+      <p class="text-3xl text-center px-8 lg:px-64">
         Where do we stay and when should we book?
       </p>
       <p class="text-center px-8 lg:px-64">
@@ -36,7 +39,7 @@ export default function FAQ() {
         Hotels and Airbnbs are also available nearby for anyone who prefers that
         option.
       </p>
-      <p class="text-4xl text-center px-8 lg:px-64">How do we get there?</p>
+      <p class="text-3xl text-center px-8 lg:px-64">How do we get there?</p>
       <p class="text-center px-8 lg:px-64">
         <a href="https://brownmountainbeach.com/" class="underline">
           Brown Mountain Beach Resort
@@ -45,7 +48,7 @@ export default function FAQ() {
         hour drive from both the Charlotte Douglas International Airport and the
         Asheville Regional Airport.
       </p>
-      <p class="text-4xl text-center px-8 lg:px-64">
+      <p class="text-3xl text-center px-8 lg:px-64">
         What will we do all weekend?
       </p>
       <p class="text-center px-8 lg:px-64">
@@ -67,7 +70,7 @@ export default function FAQ() {
         and on Saturday afternoon we'll have a wedding ceremony followed by a
         reception. Sunday includes a farewell breakfast before checkout at 11am.
       </p>
-      <p class="text-4xl text-center px-8 lg:px-64">What should I bring?</p>
+      <p class="text-3xl text-center px-8 lg:px-64">What should I bring?</p>
       <p class="text-center px-8 lg:px-64 mb-12">
         Your camp counselors will provide a packing list around the time
         invitations arrive in Spring 2025. For now, you can count on bringing
@@ -75,6 +78,6 @@ export default function FAQ() {
         Saturday that falls under “campfire cocktail attire.” We're still
         workshopping that dress code.
       </p>
-    </main>
+    </MainWrapper>
   );
 }

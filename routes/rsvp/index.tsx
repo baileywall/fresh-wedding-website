@@ -1,16 +1,21 @@
 import type { Handlers, PageProps } from "$fresh/server.ts";
+import { MainWrapper } from "../../components/MainWrapper.tsx";
+import { PageHeader } from "../../components/PageHeader.tsx";
 import { connection } from "../../db.ts";
 import type { PERSON } from "../../types.ts";
 import { NUMBER_TO_ELEMENT } from "../../util.ts";
 
 interface Data {
-  results: (PERSON & { rsvp_group_id: number })[];
+  results: (PERSON & { rsvp_group_id: number })[] | null;
   query: string;
 }
 
 const getRsvpGroups = async (
   ids: number[]
 ): Promise<{ rows: (PERSON & { rsvp_group_id: number })[] }> => {
+  if (ids.length === 0) {
+    return { rows: [] };
+  }
   const { rows } = await connection.queryObject<
     PERSON & { rsvp_group_id: number }
   >(`
@@ -18,8 +23,8 @@ const getRsvpGroups = async (
   FROM person 
   INNER JOIN (
     SELECT r2.rsvp_group_id, r2.person_id
-    FROM rsvp r1
-    INNER JOIN rsvp r2
+    FROM rsvp_group_assignment r1
+    INNER JOIN rsvp_group_assignment r2
     ON r1.rsvp_group_id = r2.rsvp_group_id
     WHERE r1.person_id IN (${ids.join(",")})
   ) r3 on r3.person_id = person.id;
@@ -33,7 +38,7 @@ export const handler: Handlers<Data> = {
       const url = new URL(req.url);
       const name = decodeURIComponent(url.searchParams.get("n") || "");
       if (!name || name.length === 0) {
-        return _ctx.render({ results: [], query: "" });
+        return _ctx.render({ results: null, query: "" });
       }
 
       const names = name.split(" ");
@@ -111,25 +116,23 @@ export const handler: Handlers<Data> = {
 
 export default function Rsvp({ data }: PageProps<Data>) {
   return (
-    <div class="py-8 mx-auto flex flex-col items-center gap-8">
-      <h1 class="md:hidden font-script text-8xl">RSVP</h1>
+    <MainWrapper>
+      <PageHeader>RSVP</PageHeader>
       <image
         src="/beverages.png"
         class="object-cover object-top w-full lg:w-2/4"
       />
-      {/* TODO remove hidden class */}
       <div class="hidden text-xl text-center px-8 lg:px-64">
         Please enter your first and last name. You will be able to RSVP for your
         whole group.
       </div>
       <div class="text-center text-3xl w-full">Coming soon!</div>
-      {/* TODO remove hidden class */}
       <form class="hidden text-xl">
         <input type="text" name="n" class="mr-4" value={data.query} />
         <button type="submit">Search</button>
       </form>
 
-      {data.results.length > 0 ? (
+      {data.results ? (
         <div class="px-8 w-full lg:w-2/4 text-xl">
           <div class="text-center pb-6">
             Select your group or try searching again:
@@ -172,6 +175,6 @@ export default function Rsvp({ data }: PageProps<Data>) {
           <hr class="border-tree-green" />
         </div>
       ) : null}
-    </div>
+    </MainWrapper>
   );
 }

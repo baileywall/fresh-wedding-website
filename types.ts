@@ -6,6 +6,21 @@ export type RSVP = {
   attend_saturday: boolean | null;
 };
 
+export type RSVP_RESPONSE = {
+  person_id: number;
+  rsvp_event: number;
+  boolean_response: boolean | null;
+  varchar_response: boolean | null;
+};
+
+export type RSVP_EVENT = {
+  id: number;
+  event_time: Date;
+  description: string;
+  title: string;
+  type: string;
+};
+
 export type RSVP_GROUP = {
   id: number;
   description: string;

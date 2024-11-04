@@ -1,7 +1,10 @@
+import { MainWrapper } from "../components/MainWrapper.tsx";
+import { PageHeader } from "../components/PageHeader.tsx";
+
 export default function Details() {
   return (
-    <main class="flex flex-col gap-8 items-center mt-16">
-      <h1 class="md:hidden font-script text-8xl">Details</h1>
+    <MainWrapper>
+      <PageHeader>Details</PageHeader>
       <image
         src="/wedding.png"
         class="object-cover object-top w-full lg:w-2/4"
@@ -19,6 +22,6 @@ export default function Details() {
         festivities as you’re able!
       </p>
       <image src="/timeline.png" class="object-cover object-top md:w-2/4" />
-    </main>
+    </MainWrapper>
   );
 }

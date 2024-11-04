@@ -1,21 +1,32 @@
 import type { Handlers, PageProps } from "$fresh/server.ts";
+import { MainWrapper } from "../../../components/MainWrapper.tsx";
 import { connection } from "../../../db.ts";
-import type { PERSON, RSVP } from "../../../types.ts";
-import { ELEMENT_TO_NUMBER } from "../../../util.ts";
+import type { PERSON, RSVP_RESPONSE, RSVP_EVENT } from "../../../types.ts";
+import { DAYS, ELEMENT_TO_NUMBER, MONTHS } from "../../../util.ts";
 
 interface Data {
-  results: (PERSON & RSVP)[];
+  results: (PERSON & RSVP_RESPONSE)[];
+  events: RSVP_EVENT[];
 }
 
 const getRsvpsForGroup = async (
   id: number
-): Promise<{ rows: (PERSON & RSVP)[] }> => {
-  const { rows } = await connection.queryObject<PERSON & RSVP>(`
-  SELECT DISTINCT first_name, last_name, id, attend_thursday, attend_friday, attend_saturday
+): Promise<{ rows: (PERSON & RSVP_RESPONSE)[] }> => {
+  const { rows } = await connection.queryObject<PERSON & RSVP_RESPONSE>(`
+  SELECT DISTINCT first_name, last_name, id, rsvp_event
   FROM person
-  INNER JOIN rsvp
-  ON rsvp.person_id = person.id
-  WHERE rsvp.rsvp_group_id = ${id};
+  INNER JOIN rsvp_group_assignment
+  ON rsvp_group_assignment.person_id = person.id
+  LEFT JOIN rsvp_response
+  ON rsvp_response.person_id = person.id
+  WHERE rsvp_group_assignment.rsvp_group_id = ${id};
+  `);
+  return { rows };
+};
+
+const getRsvpEvents = async (): Promise<{ rows: RSVP_EVENT[] }> => {
+  const { rows } = await connection.queryObject<RSVP_EVENT>(`
+  SELECT * FROM rsvp_event ORDER BY event_time;
   `);
   return { rows };
 };
@@ -24,13 +35,15 @@ export const handler: Handlers<Data> = {
   async GET(req, _ctx) {
     try {
       const groupId = ELEMENT_TO_NUMBER.get(_ctx.params.group_id);
+      console.log(groupId);
       if (!groupId) {
         throw new Error();
       }
 
       const { rows: rsvpRows } = await getRsvpsForGroup(groupId);
+      const { rows: rsvpEventRows } = await getRsvpEvents();
 
-      if (rsvpRows.find((person) => person.attend_thursday === null)) {
+      /* if (rsvpRows.find((person) => person.attend_thursday === null)) {
         const headers = new Headers();
         headers.set("location", `/rsvp/${_ctx.params.group_id}/thursday`);
         return new Response(null, {
@@ -51,10 +64,11 @@ export const handler: Handlers<Data> = {
           status: 303,
           headers,
         });
-      }
+      } */
 
       return _ctx.render({
         results: rsvpRows,
+        events: rsvpEventRows,
       });
     } catch (e) {
       console.log(e);
@@ -67,42 +81,36 @@ export const handler: Handlers<Data> = {
 };
 
 export default function RsvpGroup({ data, params }: PageProps<Data>) {
+  const personIds = Array.from(
+    new Set(data.results.map((result) => result.id))
+  );
+  const personIdToPerson = new Map<number, PERSON>(
+    personIds.map((personId) => {
+      return [personId, data.results.find((person) => person.id === personId)!];
+    })
+  );
+
   return (
-    <div class="py-8 mx-auto flex flex-col items-center text-2xl gap-8">
-      {/*<div class="text-center text-3xl w-full">Coming soon!</div>*/}
-      {data.results ? (
-        <>
-          <div>Thanks for your RSVP!</div>
-          Thursday Evening
-          <div>
-            {data.results.map((result) => (
-              <div key={result.id} class="w-56 flex justify-between">
-                {`${result.first_name} ${result.last_name}`}
-                <div>{result.attend_thursday ? "YES" : "NO"}</div>
-              </div>
-            ))}
+    <MainWrapper>
+      <div class="w-400">
+        {data.events.map((result) => (
+          <div key={result.id} class="flex flex-col py-4">
+            <div class="font-bold text-xl w-full">{result.title}</div>
+            <div>{result.description}</div>
+            <div>{`${DAYS[result.event_time.getDay()]}, ${
+              MONTHS[result.event_time.getMonth()]
+            } ${result.event_time.getDate()}`}</div>
+            {personIds.map((personId) => {
+              const person = personIdToPerson.get(personId);
+              return (
+                <div
+                  key={`person-${personId}`}
+                >{`${person?.first_name} ${person?.last_name}`}</div>
+              );
+            })}
           </div>
-          Friday Evening
-          <div>
-            {data.results.map((result) => (
-              <div key={result.id} class="w-56 flex justify-between">
-                {`${result.first_name} ${result.last_name}`}
-                <div>{result.attend_friday ? "YES" : "NO"}</div>
-              </div>
-            ))}
-          </div>
-          Saturday Evening
-          <div>
-            {data.results.map((result) => (
-              <div key={result.id} class="w-56 flex justify-between">
-                {`${result.first_name} ${result.last_name}`}
-                <div>{result.attend_saturday ? "YES" : "NO"}</div>
-              </div>
-            ))}
-          </div>
-          <a href={`/rsvp/${params.group_id}/thursday`}>Edit</a>
-        </>
-      ) : null}
-    </div>
+        ))}
+      </div>
+    </MainWrapper>
   );
 }

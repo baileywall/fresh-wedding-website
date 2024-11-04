@@ -1,9 +1,11 @@
+import { MainWrapper } from "../components/MainWrapper.tsx";
+import { PageHeader } from "../components/PageHeader.tsx";
 import { Photo } from "../components/Photo.tsx";
 
 export default function Photos() {
   return (
-    <main class="mx-auto mt-16 px-5 pb-5 flex flex-col gap-8 items-center">
-      <h1 class="md:hidden font-script text-8xl">Photos</h1>
+    <MainWrapper>
+      <PageHeader>Photos</PageHeader>
       <image
         src="/mountains.png"
         class="object-cover object-top w-full lg:w-2/4"
@@ -54,6 +56,6 @@ export default function Photos() {
         <Photo alt="24_03 hot_waterfall" src="/photos/bc_47.jpeg" />
         <Photo alt="24_03 proposal_overlook" src="/photos/bc_49.jpeg" />
       </div>
-    </main>
+    </MainWrapper>
   );
 }

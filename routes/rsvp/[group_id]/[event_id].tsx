@@ -1,59 +1,50 @@
 import type { Handlers, PageProps } from "$fresh/server.ts";
+import { MainWrapper } from "../../../components/MainWrapper.tsx";
 import { connection } from "../../../db.ts";
-import type { PERSON, RSVP } from "../../../types.ts";
-import { ELEMENT_TO_NUMBER } from "../../../util.ts";
+import type {
+  PERSON,
+  RSVP,
+  RSVP_EVENT,
+  RSVP_RESPONSE,
+} from "../../../types.ts";
+import { DAYS, ELEMENT_TO_NUMBER, MONTHS } from "../../../util.ts";
 
 interface Data {
-  results: (PERSON & RSVP)[];
+  results: (PERSON & RSVP_RESPONSE)[];
+  events: RSVP_EVENT[];
 }
 
 const getRsvpsForGroup = async (
   id: number
+): Promise<{ rows: (PERSON & RSVP_RESPONSE)[] }> => {
+  const { rows } = await connection.queryObject<PERSON & RSVP_RESPONSE>(`
+  SELECT DISTINCT first_name, last_name, id, rsvp_event, boolean_response, varchar_response
+  FROM person
+  INNER JOIN rsvp_group_assignment
+  ON rsvp_group_assignment.person_id = person.id
+  LEFT JOIN rsvp_response
+  ON rsvp_response.person_id = person.id
+  WHERE rsvp_group_assignment.rsvp_group_id = ${id};
+  `);
+  return { rows };
+};
+
+const getRsvpEvents = async (): Promise<{ rows: RSVP_EVENT[] }> => {
+  const { rows } = await connection.queryObject<RSVP_EVENT>(`
+  SELECT * FROM rsvp_event ORDER BY event_time;
+  `);
+  return { rows };
+};
+
+const updateRsvpResponse = async (
+  eventId: string,
+  personId: string,
+  value: boolean
 ): Promise<{ rows: (PERSON & RSVP)[] }> => {
   const { rows } = await connection.queryObject<PERSON & RSVP>(`
-  SELECT DISTINCT first_name, last_name, id, attend_thursday, attend_friday, attend_saturday
-  FROM person
-  INNER JOIN rsvp
-  ON rsvp.person_id = person.id
-  WHERE rsvp.rsvp_group_id = ${id};
-  `);
-  return { rows };
-};
-
-const updateThursdayRsvpForPerson = async (newRsvp: {
-  person_id: number;
-  attend_thursday?: boolean;
-}): Promise<{ rows: (PERSON & RSVP)[] }> => {
-  const { rows } = await connection.queryObject<PERSON & RSVP>(`
-  UPDATE rsvp
-  SET attend_thursday = ${newRsvp.attend_thursday}
-  WHERE person_id = ${newRsvp.person_id}
-  RETURNING *;
-  `);
-  return { rows };
-};
-
-const updateFridayRsvpForPerson = async (newRsvp: {
-  person_id: number;
-  attend_friday?: boolean;
-}): Promise<{ rows: (PERSON & RSVP)[] }> => {
-  const { rows } = await connection.queryObject<PERSON & RSVP>(`
-  UPDATE rsvp
-  SET attend_friday = ${newRsvp.attend_friday}
-  WHERE person_id = ${newRsvp.person_id}
-  RETURNING *;
-  `);
-  return { rows };
-};
-
-const updateSaturdayRsvpForPerson = async (newRsvp: {
-  person_id: number;
-  attend_saturday?: boolean;
-}): Promise<{ rows: (PERSON & RSVP)[] }> => {
-  const { rows } = await connection.queryObject<PERSON & RSVP>(`
-  UPDATE rsvp
-  SET attend_saturday = ${newRsvp.attend_saturday}
-  WHERE person_id = ${newRsvp.person_id}
+  INSERT INTO rsvp_response (rsvp_event, person_id, boolean_response) VALUES
+  (${eventId}, ${personId}, ${value})
+  ON CONFLICT (rsvp_event, person_id) DO UPDATE SET boolean_response = ${value}
   RETURNING *;
   `);
   return { rows };
@@ -62,68 +53,14 @@ const updateSaturdayRsvpForPerson = async (newRsvp: {
 export const handler: Handlers<Data> = {
   async POST(req, _ctx) {
     try {
-      const newRsvps = Array.from((await req.formData()).entries()).reduce(
-        (prev, curr) => {
-          const [personId, name] = curr[0].split(":");
-          if (!prev.has(personId)) {
-            prev.set(personId, { person_id: Number(personId) });
-          }
-          const existing = prev.get(personId) as { person_id: number };
-          prev.set(personId, {
-            ...existing,
-            [name]: curr[1].toString() === "true" ? true : false,
-          });
-          return prev;
-        },
-        new Map<
-          string,
-          {
-            person_id: number;
-            attend_thursday?: boolean;
-            attend_friday?: boolean;
-            attend_saturday?: boolean;
-          }
-        >()
-      );
-
       if (_ctx.params.event_id === "thursday") {
-        const promisedUpdates = Array.from(newRsvps.entries()).map(
-          async (entry) => {
-            return await updateThursdayRsvpForPerson(entry[1]);
-          }
-        );
-        await Promise.all(promisedUpdates);
+        for (const curr of await req.formData()) {
+          const [eventId, personId] = curr[0].split(":");
+          await updateRsvpResponse(eventId, personId, curr[1] === "true");
+        }
 
         const headers = new Headers();
         headers.set("location", `/rsvp/${_ctx.params.group_id}/friday`);
-        return new Response(null, {
-          status: 303,
-          headers,
-        });
-      } else if (_ctx.params.event_id === "friday") {
-        const promisedUpdates = Array.from(newRsvps.entries()).map(
-          async (entry) => {
-            return await updateFridayRsvpForPerson(entry[1]);
-          }
-        );
-        await Promise.all(promisedUpdates);
-
-        const headers = new Headers();
-        headers.set("location", `/rsvp/${_ctx.params.group_id}/saturday`);
-        return new Response(null, {
-          status: 303,
-          headers,
-        });
-      } else if (_ctx.params.event_id === "saturday") {
-        const promisedUpdates = Array.from(newRsvps.entries()).map(
-          async (entry) => {
-            return await updateSaturdayRsvpForPerson(entry[1]);
-          }
-        );
-        await Promise.all(promisedUpdates);
-
-        const headers = new Headers();
-        headers.set("location", `/rsvp/${_ctx.params.group_id}`);
         return new Response(null, {
           status: 303,
           headers,
@@ -132,6 +69,7 @@ export const handler: Handlers<Data> = {
 
       return _ctx.render({
         results: [],
+        events: [],
       });
     } catch (e) {
       console.log(e);
@@ -149,9 +87,11 @@ export const handler: Handlers<Data> = {
       }
 
       const { rows: rsvpRows } = await getRsvpsForGroup(groupId);
+      const { rows: rsvpEventRows } = await getRsvpEvents();
 
       return _ctx.render({
         results: rsvpRows,
+        events: rsvpEventRows,
       });
     } catch (e) {
       console.log(e);
@@ -164,8 +104,17 @@ export const handler: Handlers<Data> = {
 };
 
 export default function RsvpGroupEvent({ data, params }: PageProps<Data>) {
+  const personIds = Array.from(
+    new Set(data.results.map((result) => result.id))
+  );
+  const personIdToPerson = new Map<number, PERSON>(
+    personIds.map((personId) => {
+      return [personId, data.results.find((person) => person.id === personId)!];
+    })
+  );
+
   return (
-    <div class="py-8 mx-auto flex flex-col items-center text-2xl gap-8">
+    <MainWrapper>
       {/*<div class="text-center text-3xl w-full">Coming soon!</div>*/}
       <div class="w-96">
         <div class="w-full bg-gray-500 p-3 rounded-sm shadow-inner">
@@ -181,92 +130,65 @@ export default function RsvpGroupEvent({ data, params }: PageProps<Data>) {
         </div>
       </div>
       {data.results ? (
-        params.event_id === "thursday" ? (
-          <>
-            Thursday Evening
-            <form method="post" action={`/rsvp/${params.group_id}/thursday`}>
-              {data.results.map((result) => (
-                <div key={result.id} class="w-56 flex justify-between">
-                  <div>{`${result.first_name} ${result.last_name}`}</div>
-                  <label for={`${result.id}:attend_thursday`}>Yes</label>
-                  <input
-                    type="radio"
-                    id={`${result.id}:attend_thursday`}
-                    name={`${result.id}:attend_thursday`}
-                    value="true"
-                    checked={result.attend_thursday === true ? true : false}
-                  />
-                  <label for={`${result.id}:attend_thursday`}>No</label>
-                  <input
-                    type="radio"
-                    id={`${result.id}:attend_thursday`}
-                    name={`${result.id}:attend_thursday`}
-                    value="false"
-                    checked={result.attend_thursday === false ? true : false}
-                  />
-                </div>
-              ))}
-              <button type="submit">Next</button>
-            </form>
-          </>
-        ) : params.event_id === "friday" ? (
-          <>
-            Friday Evening
-            <form method="post" action={`/rsvp/${params.group_id}/friday`}>
-              {data.results.map((result) => (
-                <div key={result.id} class="w-56 flex justify-between">
-                  <div>{`${result.first_name} ${result.last_name}`}</div>
-                  <label for={`${result.id}:attend_friday`}>Yes</label>
-                  <input
-                    type="radio"
-                    id={`${result.id}:attend_friday`}
-                    name={`${result.id}:attend_friday`}
-                    value="true"
-                    checked={result.attend_friday === true ? true : false}
-                  />
-                  <label for={`${result.id}:attend_friday`}>No</label>
-                  <input
-                    type="radio"
-                    id={`${result.id}:attend_friday`}
-                    name={`${result.id}:attend_friday`}
-                    value="false"
-                    checked={result.attend_friday === false ? true : false}
-                  />
-                </div>
-              ))}
-              <button type="submit">Next</button>
-            </form>
-          </>
-        ) : (
-          <>
-            Saturday Evening
-            <form method="post" action={`/rsvp/${params.group_id}/saturday`}>
-              {data.results.map((result) => (
-                <div key={result.id} class="w-56 flex justify-between">
-                  <div>{`${result.first_name} ${result.last_name}`}</div>
-                  <label for={`${result.id}:attend_saturday`}>Yes</label>
-                  <input
-                    type="radio"
-                    id={`${result.id}:attend_saturday`}
-                    name={`${result.id}:attend_saturday`}
-                    value="true"
-                    checked={result.attend_saturday === true ? true : false}
-                  />
-                  <label for={`${result.id}:attend_saturday`}>No</label>
-                  <input
-                    type="radio"
-                    id={`${result.id}:attend_saturday`}
-                    name={`${result.id}:attend_saturday`}
-                    value="false"
-                    checked={result.attend_saturday === false ? true : false}
-                  />
-                </div>
-              ))}
-              <button type="submit">Next</button>
-            </form>
-          </>
-        )
+        <>
+          {params.event_id === "thursday"
+            ? "Thursday Evening"
+            : params.event_id === "friday"
+            ? "Friday Evening"
+            : "Saturday Evening"}
+          <form
+            method="post"
+            action={`/rsvp/${params.group_id}/${params.event_id}`}
+          >
+            {data.events.map((result) => (
+              <div key={result.id} class="flex flex-col py-4">
+                <div class="font-bold text-xl w-full">{result.title}</div>
+                <div>{result.description}</div>
+                <div>{`${DAYS[result.event_time.getDay()]}, ${
+                  MONTHS[result.event_time.getMonth()]
+                } ${result.event_time.getDate()}`}</div>
+                {personIds.map((personId) => {
+                  const person = personIdToPerson.get(personId)!;
+                  const response = data.results.find(
+                    (result) =>
+                      result.rsvp_event === result.id && result.id === personId
+                  );
+                  return (
+                    <div key={person.id} class="w-56 flex justify-between">
+                      <div>{`${person.first_name} ${person.last_name}`}</div>
+                      <label for={`${result.id}:${person.id}`}>Yes</label>
+                      <input
+                        type="radio"
+                        id={`${result.id}:${person.id}`}
+                        name={`${result.id}:${person.id}`}
+                        value="true"
+                        checked={
+                          response && response.boolean_response === true
+                            ? true
+                            : false
+                        }
+                      />
+                      <label for={`${result.id}:${person.id}`}>No</label>
+                      <input
+                        type="radio"
+                        id={`${result.id}:${person.id}`}
+                        name={`${result.id}:${person.id}`}
+                        value="false"
+                        checked={
+                          response && response.boolean_response === false
+                            ? true
+                            : false
+                        }
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+            <button type="submit">Next</button>
+          </form>
+        </>
       ) : null}
-    </div>
+    </MainWrapper>
   );
 }
