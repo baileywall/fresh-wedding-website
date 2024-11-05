@@ -122,11 +122,11 @@ export default function Rsvp({ data }: PageProps<Data>) {
         src="/beverages.png"
         class="object-cover object-top w-full lg:w-2/4"
       />
+      <div class="text-center text-3xl w-full">Coming soon!</div>
       <div class="hidden text-xl text-center px-8 lg:px-64">
         Please enter your first and last name. You will be able to RSVP for your
         whole group.
       </div>
-      <div class="text-center text-3xl w-full">Coming soon!</div>
       <form class="hidden text-xl">
         <input type="text" name="n" class="mr-4" value={data.query} />
         <button type="submit">Search</button>

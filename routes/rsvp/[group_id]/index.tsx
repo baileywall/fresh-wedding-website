@@ -1,11 +1,21 @@
 import type { Handlers, PageProps } from "$fresh/server.ts";
 import { MainWrapper } from "../../../components/MainWrapper.tsx";
+import { OptionResponses } from "../../../components/OptionResponses.tsx";
+import { PageHeader } from "../../../components/PageHeader.tsx";
+import { RsvpEventDate } from "../../../components/RsvpEventDate.tsx";
+import { TextResponses } from "../../../components/TextResponses.tsx";
 import { connection } from "../../../db.ts";
-import type { PERSON, RSVP_RESPONSE, RSVP_EVENT } from "../../../types.ts";
-import { DAYS, ELEMENT_TO_NUMBER, MONTHS } from "../../../util.ts";
+import {
+  type PERSON,
+  type RSVP_RESPONSE,
+  type RSVP_EVENT,
+  EVENT_GROUPS,
+  RSVP_EVENT_TYPE,
+} from "../../../types.ts";
+import { ELEMENT_TO_NUMBER } from "../../../util.ts";
 
 interface Data {
-  results: (PERSON & RSVP_RESPONSE)[];
+  responses: (PERSON & RSVP_RESPONSE)[];
   events: RSVP_EVENT[];
 }
 
@@ -13,7 +23,7 @@ const getRsvpsForGroup = async (
   id: number
 ): Promise<{ rows: (PERSON & RSVP_RESPONSE)[] }> => {
   const { rows } = await connection.queryObject<PERSON & RSVP_RESPONSE>(`
-  SELECT DISTINCT first_name, last_name, id, rsvp_event
+  SELECT DISTINCT first_name, last_name, id, rsvp_event, options_response, text_response
   FROM person
   INNER JOIN rsvp_group_assignment
   ON rsvp_group_assignment.person_id = person.id
@@ -32,42 +42,33 @@ const getRsvpEvents = async (): Promise<{ rows: RSVP_EVENT[] }> => {
 };
 
 export const handler: Handlers<Data> = {
-  async GET(req, _ctx) {
+  async GET(_, _ctx) {
     try {
       const groupId = ELEMENT_TO_NUMBER.get(_ctx.params.group_id);
-      console.log(groupId);
       if (!groupId) {
-        throw new Error();
+        return _ctx.render({
+          responses: [],
+          events: [],
+        });
       }
 
       const { rows: rsvpRows } = await getRsvpsForGroup(groupId);
       const { rows: rsvpEventRows } = await getRsvpEvents();
 
-      /* if (rsvpRows.find((person) => person.attend_thursday === null)) {
+      if (rsvpRows.find((rsvp) => rsvp.rsvp_event === null)) {
         const headers = new Headers();
-        headers.set("location", `/rsvp/${_ctx.params.group_id}/thursday`);
+        headers.set(
+          "location",
+          `/rsvp/${_ctx.params.group_id}/${EVENT_GROUPS.THURSDAY}`
+        );
         return new Response(null, {
           status: 303,
           headers,
         });
-      } else if (rsvpRows.find((person) => person.attend_friday === null)) {
-        const headers = new Headers();
-        headers.set("location", `/rsvp/${_ctx.params.group_id}/friday`);
-        return new Response(null, {
-          status: 303,
-          headers,
-        });
-      } else if (rsvpRows.find((person) => person.attend_saturday === null)) {
-        const headers = new Headers();
-        headers.set("location", `/rsvp/${_ctx.params.group_id}/saturday`);
-        return new Response(null, {
-          status: 303,
-          headers,
-        });
-      } */
+      }
 
       return _ctx.render({
-        results: rsvpRows,
+        responses: rsvpRows,
         events: rsvpEventRows,
       });
     } catch (e) {
@@ -82,34 +83,57 @@ export const handler: Handlers<Data> = {
 
 export default function RsvpGroup({ data, params }: PageProps<Data>) {
   const personIds = Array.from(
-    new Set(data.results.map((result) => result.id))
+    new Set(data.responses.map((result) => result.id))
   );
   const personIdToPerson = new Map<number, PERSON>(
     personIds.map((personId) => {
-      return [personId, data.results.find((person) => person.id === personId)!];
+      return [
+        personId,
+        data.responses.find((person) => person.id === personId)!,
+      ];
     })
   );
 
   return (
     <MainWrapper>
-      <div class="w-400">
-        {data.events.map((result) => (
-          <div key={result.id} class="flex flex-col py-4">
-            <div class="font-bold text-xl w-full">{result.title}</div>
-            <div>{result.description}</div>
-            <div>{`${DAYS[result.event_time.getDay()]}, ${
-              MONTHS[result.event_time.getMonth()]
-            } ${result.event_time.getDate()}`}</div>
-            {personIds.map((personId) => {
-              const person = personIdToPerson.get(personId);
-              return (
-                <div
-                  key={`person-${personId}`}
-                >{`${person?.first_name} ${person?.last_name}`}</div>
-              );
-            })}
-          </div>
-        ))}
+      <PageHeader>RSVP</PageHeader>
+      <image
+        src="/beverages.png"
+        class="object-cover object-top w-full lg:w-2/4"
+      />
+      <div class="mx-auto">
+        <div class="text-3xl text-center">Thank you for your RSVP!</div>
+        <div class="text-xl text-center">Your response is below</div>
+        <div class="flex flex-col mt-8 gap-8">
+          {data.events.map((event) => (
+            <div key={event.id} class="flex flex-col py-4 items-center">
+              <div class="font-script font-bold text-6xl">{event.title}</div>
+              <div>{event.description}</div>
+              <RsvpEventDate date={event.event_time} />
+              {event.type === RSVP_EVENT_TYPE.OPTIONS ? (
+                <OptionResponses
+                  personIds={personIds}
+                  personIdToPerson={personIdToPerson}
+                  event={event}
+                  responses={data.responses}
+                />
+              ) : (
+                <TextResponses
+                  personIds={personIds}
+                  personIdToPerson={personIdToPerson}
+                  event={event}
+                  responses={data.responses}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+        <a
+          href={`/rsvp/${params.group_id}/${EVENT_GROUPS.THURSDAY}`}
+          class="text-blue-600 hover:underline text-xl text-center block"
+        >
+          Edit RSVP
+        </a>
       </div>
     </MainWrapper>
   );

@@ -1,24 +1,22 @@
-export type RSVP = {
-  rsvp_group_id: number;
-  person_id: number;
-  attend_thursday: boolean | null;
-  attend_friday: boolean | null;
-  attend_saturday: boolean | null;
-};
-
 export type RSVP_RESPONSE = {
   person_id: number;
   rsvp_event: number;
-  boolean_response: boolean | null;
-  varchar_response: boolean | null;
+  options_response: number | null;
+  text_response: string | null;
 };
+
+export enum RSVP_EVENT_TYPE {
+  OPTIONS = "OPTIONS",
+  TEXT = "TEXT",
+}
 
 export type RSVP_EVENT = {
   id: number;
   event_time: Date;
   description: string;
   title: string;
-  type: string;
+  type: RSVP_EVENT_TYPE;
+  options: string[];
 };
 
 export type RSVP_GROUP = {
@@ -34,3 +32,10 @@ export type PERSON = {
   type_id: number;
   side: string;
 };
+
+export enum EVENT_GROUPS {
+  THURSDAY = "thursday",
+  FRIDAY = "friday",
+  SATURDAY = "saturday",
+  SUNDAY = "sunday",
+}

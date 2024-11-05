@@ -10,7 +10,7 @@ import * as $faq from "./routes/faq.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $photos from "./routes/photos.tsx";
 import * as $registry from "./routes/registry.tsx";
-import * as $rsvp_group_id_event_id_ from "./routes/rsvp/[group_id]/[event_id].tsx";
+import * as $rsvp_group_id_event_group_ from "./routes/rsvp/[group_id]/[event_group].tsx";
 import * as $rsvp_group_id_index from "./routes/rsvp/[group_id]/index.tsx";
 import * as $rsvp_index from "./routes/rsvp/index.tsx";
 import * as $Hamburger from "./islands/Hamburger.tsx";
@@ -26,7 +26,7 @@ const manifest = {
     "./routes/index.tsx": $index,
     "./routes/photos.tsx": $photos,
     "./routes/registry.tsx": $registry,
-    "./routes/rsvp/[group_id]/[event_id].tsx": $rsvp_group_id_event_id_,
+    "./routes/rsvp/[group_id]/[event_group].tsx": $rsvp_group_id_event_group_,
     "./routes/rsvp/[group_id]/index.tsx": $rsvp_group_id_index,
     "./routes/rsvp/index.tsx": $rsvp_index,
   },
