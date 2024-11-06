@@ -12,21 +12,26 @@ export function TextResponsesForm(
   const { personIds, personIdToPerson, event, responses } = props;
   return (
     <>
-      {personIds.map((personId) => {
+      {personIds.map((personId, index) => {
         const person = personIdToPerson.get(personId)!;
         const response = responses.find(
           (response) =>
             response.rsvp_event === event.id && response.id === personId
         );
         return (
-          <div key={person.id} class="w-56 flex justify-between">
-            <div>{`${person.first_name} ${person.last_name}`}</div>
-            <input
-              type="text"
-              id={`${event.id}:${person.id}:TEXT`}
-              name={`${event.id}:${person.id}:TEXT`}
-              value={response?.text_response ?? ""}
-            />
+          <div key={`text-form-${person.id}`} class="w-full text-xl">
+            {index === 0 && <hr class="border-tree-green" />}
+            <div class="w-full flex justify-between items-center py-4">
+              <div>{`${person.first_name} ${person.last_name}`}</div>
+              <input
+                type="text"
+                id={`${event.id}:${person.id}:TEXT`}
+                name={`${event.id}:${person.id}:TEXT`}
+                value={response?.text_response ?? ""}
+                class="ml-2"
+              />
+            </div>
+            <hr class="border-tree-green" />
           </div>
         );
       })}

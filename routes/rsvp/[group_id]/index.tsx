@@ -2,6 +2,7 @@ import type { Handlers, PageProps } from "$fresh/server.ts";
 import { MainWrapper } from "../../../components/MainWrapper.tsx";
 import { OptionResponses } from "../../../components/OptionResponses.tsx";
 import { PageHeader } from "../../../components/PageHeader.tsx";
+import { PageImage } from "../../../components/PageImage.tsx";
 import { RsvpEventDate } from "../../../components/RsvpEventDate.tsx";
 import { TextResponses } from "../../../components/TextResponses.tsx";
 import { connection } from "../../../db.ts";
@@ -97,44 +98,41 @@ export default function RsvpGroup({ data, params }: PageProps<Data>) {
   return (
     <MainWrapper>
       <PageHeader>RSVP</PageHeader>
-      <image
-        src="/beverages.png"
-        class="object-cover object-top w-full lg:w-2/4"
-      />
-      <div class="mx-auto">
-        <div class="text-3xl text-center">Thank you for your RSVP!</div>
-        <div class="text-xl text-center">Your response is below</div>
-        <div class="flex flex-col mt-8 gap-8">
-          {data.events.map((event) => (
-            <div key={event.id} class="flex flex-col py-4 items-center">
-              <div class="font-script font-bold text-6xl">{event.title}</div>
-              <div>{event.description}</div>
-              <RsvpEventDate date={event.event_time} />
-              {event.type === RSVP_EVENT_TYPE.OPTIONS ? (
-                <OptionResponses
-                  personIds={personIds}
-                  personIdToPerson={personIdToPerson}
-                  event={event}
-                  responses={data.responses}
-                />
-              ) : (
-                <TextResponses
-                  personIds={personIds}
-                  personIdToPerson={personIdToPerson}
-                  event={event}
-                  responses={data.responses}
-                />
-              )}
-            </div>
-          ))}
-        </div>
-        <a
-          href={`/rsvp/${params.group_id}/${EVENT_GROUPS.THURSDAY}`}
-          class="text-blue-600 hover:underline text-xl text-center block"
-        >
-          Edit RSVP
-        </a>
+      <PageImage src="/beverages.png" />
+      <div>
+        <h2>Thank you for your RSVP!</h2>
+        <p class="text-xl">Your response is below</p>
       </div>
+      <div class="flex flex-col mt-8 gap-8 w-full">
+        {data.events.map((event) => (
+          <div key={event.id} class="flex flex-col py-4 items-center">
+            <h2 class="font-script font-bold text-6xl">{event.title}</h2>
+            <div>{event.description}</div>
+            <RsvpEventDate date={event.event_time} />
+            {event.type === RSVP_EVENT_TYPE.OPTIONS ? (
+              <OptionResponses
+                personIds={personIds}
+                personIdToPerson={personIdToPerson}
+                event={event}
+                responses={data.responses}
+              />
+            ) : (
+              <TextResponses
+                personIds={personIds}
+                personIdToPerson={personIdToPerson}
+                event={event}
+                responses={data.responses}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+      <a
+        href={`/rsvp/${params.group_id}/${EVENT_GROUPS.THURSDAY}`}
+        class="text-blue-600 hover:underline text-xl text-center block"
+      >
+        Edit RSVP
+      </a>
     </MainWrapper>
   );
 }

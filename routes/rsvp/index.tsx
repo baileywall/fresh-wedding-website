@@ -1,6 +1,7 @@
 import type { Handlers, PageProps } from "$fresh/server.ts";
 import { MainWrapper } from "../../components/MainWrapper.tsx";
 import { PageHeader } from "../../components/PageHeader.tsx";
+import { PageImage } from "../../components/PageImage.tsx";
 import { connection } from "../../db.ts";
 import type { PERSON } from "../../types.ts";
 import { NUMBER_TO_ELEMENT } from "../../util.ts";
@@ -118,26 +119,20 @@ export default function Rsvp({ data }: PageProps<Data>) {
   return (
     <MainWrapper>
       <PageHeader>RSVP</PageHeader>
-      <image
-        src="/beverages.png"
-        class="object-cover object-top w-full lg:w-2/4"
-      />
-      <div class="text-center text-3xl w-full">Coming soon!</div>
-      <div class="hidden text-xl text-center px-8 lg:px-64">
+      <PageImage src="/beverages.png" />
+      <p class="text-3xl">Coming soon!</p>
+      <p class="hidden text-xl">
         Please enter your first and last name. You will be able to RSVP for your
         whole group.
-      </div>
+      </p>
       <form class="hidden text-xl">
         <input type="text" name="n" class="mr-4" value={data.query} />
         <button type="submit">Search</button>
       </form>
 
       {data.results ? (
-        <div class="px-8 w-full lg:w-2/4 text-xl">
-          <div class="text-center pb-6">
-            Select your group or try searching again:
-          </div>
-          <hr class="border-tree-green" />
+        <>
+          <p class="text-xl mb-6">Select your group or try searching again:</p>
           {Array.from(
             data.results
               .reduce((prev, curr) => {
@@ -153,27 +148,27 @@ export default function Rsvp({ data }: PageProps<Data>) {
           ).map((data, index) => {
             return (
               <>
-                {index > 0 && <hr class="border-tree-green" />}
-                <div class="flex w-full py-6 items-center">
-                  <div class="flex flex-col flex-grow">
+                {index === 0 && <hr class="border-tree-green w-full" />}
+                <div class="flex w-full py-6 items-center justify-between">
+                  <div class="flex flex-col">
                     {data[1].map((data) => {
                       return (
-                        <div>{`${data.first_name} ${data.last_name}`}</div>
+                        <p class="text-xl">{`${data.first_name} ${data.last_name}`}</p>
                       );
                     })}
                   </div>
                   <a
                     href={`/rsvp/${NUMBER_TO_ELEMENT.get(data[0])}`}
-                    class="text-blue-600 hover:underline"
+                    class="text-blue-600 hover:underline text-xl"
                   >
                     Select
                   </a>
                 </div>
+                <hr class="border-tree-green w-full" />
               </>
             );
           })}
-          <hr class="border-tree-green" />
-        </div>
+        </>
       ) : null}
     </MainWrapper>
   );

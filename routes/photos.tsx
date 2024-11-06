@@ -1,15 +1,13 @@
 import { MainWrapper } from "../components/MainWrapper.tsx";
 import { PageHeader } from "../components/PageHeader.tsx";
+import { PageImage } from "../components/PageImage.tsx";
 import { Photo } from "../components/Photo.tsx";
 
 export default function Photos() {
   return (
     <MainWrapper>
       <PageHeader>Photos</PageHeader>
-      <image
-        src="/mountains.png"
-        class="object-cover object-top w-full lg:w-2/4"
-      />
+      <PageImage src="/mountains.png" />
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Photo alt="19_04 first_hike" src="/photos/bc_1.jpeg" />
         <Photo alt="19_04 first_yosemite_waterfall" src="/photos/bc_2.jpeg" />

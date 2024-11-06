@@ -19,12 +19,9 @@ export function OptionResponses(
             response.rsvp_event === event.id && response.id === personId
         );
         return (
-          <div class="w-full text-xl">
+          <div key={`options-${person.id}`} class="w-full text-xl">
             {index === 0 && <hr class="border-tree-green" />}
-            <div
-              key={person.id}
-              class=" w-full flex justify-between items-center py-4"
-            >
+            <div class="w-full flex justify-between items-center py-4">
               <div>{`${person.first_name} ${person.last_name}`}</div>
               <div>
                 {response?.options_response !== undefined &&

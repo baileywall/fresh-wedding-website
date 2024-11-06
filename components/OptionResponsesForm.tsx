@@ -12,27 +12,37 @@ export function OptionResponsesForm(
   const { personIds, personIdToPerson, event, responses } = props;
   return (
     <>
-      {personIds.map((personId) => {
+      {personIds.map((personId, index) => {
         const person = personIdToPerson.get(personId)!;
         const response = responses.find(
           (response) =>
             response.rsvp_event === event.id && response.id === personId
         );
         return (
-          <div key={person.id} class="w-56 flex justify-between">
-            <div>{`${person.first_name} ${person.last_name}`}</div>
-            {event.options.map((option, index) => (
-              <>
-                <label for={`${event.id}:${person.id}:OPTIONS`}>{option}</label>
-                <input
-                  type="radio"
-                  id={`${event.id}:${person.id}:OPTIONS`}
-                  name={`${event.id}:${person.id}:OPTIONS`}
-                  value={index}
-                  checked={index === response?.options_response}
-                />
-              </>
-            ))}
+          <div key={`options-form-${person.id}`} class="w-full text-xl">
+            {index === 0 && <hr class="border-tree-green" />}
+            <div class="w-full flex justify-between items-center py-4">
+              <div>{`${person.first_name} ${person.last_name}`}</div>
+              <div class="flex-grow" />
+              {event.options.map((option, index) => (
+                <>
+                  <label
+                    for={`${event.id}:${person.id}:OPTIONS:${index}`}
+                    class="mx-2"
+                  >
+                    {option}
+                  </label>
+                  <input
+                    type="radio"
+                    id={`${event.id}:${person.id}:OPTIONS:${index}`}
+                    name={`${event.id}:${person.id}:OPTIONS`}
+                    value={index}
+                    checked={index === response?.options_response}
+                  />
+                </>
+              ))}
+            </div>
+            <hr class="border-tree-green" />
           </div>
         );
       })}

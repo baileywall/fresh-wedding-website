@@ -9,8 +9,6 @@ dayjs.extend(timezone);
 export function RsvpEventDate(props: JSX.HTMLAttributes & { date: Date }) {
   const { date } = props;
   return (
-    <div>
-      {dayjs(date).tz("America/New_York").format("dddd, MMMM D h:mma EST")}
-    </div>
+    <p>{dayjs(date).tz("America/New_York").format("dddd, MMMM D h:mma EST")}</p>
   );
 }

@@ -1,6 +1,7 @@
 import type { Handlers, PageProps } from "$fresh/server.ts";
 import { MainWrapper } from "../../../components/MainWrapper.tsx";
 import { OptionResponsesForm } from "../../../components/OptionResponsesForm.tsx";
+import { PageHeader } from "../../../components/PageHeader.tsx";
 import { RsvpEventDate } from "../../../components/RsvpEventDate.tsx";
 import { TextResponsesForm } from "../../../components/TextResponsesForm.tsx";
 import { connection } from "../../../db.ts";
@@ -186,35 +187,42 @@ export default function RsvpGroupEvent({ data, params }: PageProps<Data>) {
 
   return (
     <MainWrapper>
-      <div class="w-96">
-        <div class="w-full bg-gray-500 p-3 rounded-sm shadow-inner">
-          <span
-            class={`block bg-gray-700 h-2 rounded-sm ${
-              params.event_group === EVENT_GROUPS.THURSDAY
-                ? "w-1/4"
-                : params.event_group === EVENT_GROUPS.FRIDAY
-                ? "w-2/4"
-                : "w-3/4"
-            }`}
-          />
-        </div>
+      <PageHeader>RSVP</PageHeader>
+      <div class="w-full bg-eggplant-light rounded-sm shadow-inner">
+        <span
+          class={`block bg-eggplant h-2 rounded-sm ${
+            params.event_group === EVENT_GROUPS.THURSDAY
+              ? "w-1/5"
+              : params.event_group === EVENT_GROUPS.FRIDAY
+              ? "w-2/5"
+              : params.event_group === EVENT_GROUPS.SATURDAY
+              ? "w-3/5"
+              : "w-4/5"
+          }`}
+        />
       </div>
       {data.responses ? (
         <>
-          {params.event_group === EVENT_GROUPS.THURSDAY
-            ? "Thursday"
-            : params.event_group === EVENT_GROUPS.FRIDAY
-            ? "Friday"
-            : params.event_group === EVENT_GROUPS.SATURDAY
-            ? "Saturday"
-            : "Sunday"}
+          {/* params.event_group === EVENT_GROUPS.THURSDAY
+              ? "Thursday"
+              : params.event_group === EVENT_GROUPS.FRIDAY
+              ? "Friday"
+              : params.event_group === EVENT_GROUPS.SATURDAY
+              ? "Saturday"
+        : "Sunday" */}
           <form
             method="post"
             action={`/rsvp/${params.group_id}/${params.event_group}`}
+            class="w-full"
           >
             {data.events.map((event) => (
-              <div key={event.id} class="flex flex-col py-4">
-                <div class="font-bold text-xl w-full">{event.title}</div>
+              <div
+                key={event.id}
+                class="flex flex-col py-4 items-center w-full"
+              >
+                <h2 class="font-script font-bold text-6xl w-full text-center">
+                  {event.title}
+                </h2>
                 <div>{event.description}</div>
                 <RsvpEventDate date={event.event_time} />
                 {event.type === RSVP_EVENT_TYPE.OPTIONS ? (
@@ -234,7 +242,9 @@ export default function RsvpGroupEvent({ data, params }: PageProps<Data>) {
                 )}
               </div>
             ))}
-            <button type="submit">Next</button>
+            <button type="submit" class="text-blue-600 hover:underline text-xl">
+              Next
+            </button>
           </form>
         </>
       ) : null}
