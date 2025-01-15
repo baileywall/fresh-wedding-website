@@ -126,7 +126,12 @@ export default function Rsvp({ data }: PageProps<Data>) {
         whole group.
       </p>
       <form class="hidden text-xl">
-        <input type="text" name="n" class="mr-4" value={data.query} />
+        <input
+          type="text"
+          name="n"
+          class="mr-4 p-1 rounded-md border-2 border-tree-green"
+          value={data.query}
+        />
         <button type="submit">Search</button>
       </form>
 

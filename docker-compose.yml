@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  wedding-website:
+    container_name: deno_fresh_app
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    command: deno run -A main.ts

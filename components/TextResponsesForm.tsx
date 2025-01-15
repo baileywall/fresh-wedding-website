@@ -28,7 +28,7 @@ export function TextResponsesForm(
                 id={`${event.id}:${person.id}:TEXT`}
                 name={`${event.id}:${person.id}:TEXT`}
                 value={response?.text_response ?? ""}
-                class="ml-2"
+                class="ml-2 p-1 rounded-md border-2 border-tree-green"
               />
             </div>
             <hr class="border-tree-green" />

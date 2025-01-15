@@ -2,6 +2,7 @@ import type { Handlers, PageProps } from "$fresh/server.ts";
 import { MainWrapper } from "../../../components/MainWrapper.tsx";
 import { OptionResponsesForm } from "../../../components/OptionResponsesForm.tsx";
 import { PageHeader } from "../../../components/PageHeader.tsx";
+import { PageImage } from "../../../components/PageImage.tsx";
 import { RsvpEventDate } from "../../../components/RsvpEventDate.tsx";
 import { TextResponsesForm } from "../../../components/TextResponsesForm.tsx";
 import { connection } from "../../../db.ts";
@@ -37,6 +38,13 @@ const EVENT_GROUP_SELECTOR = new Map<string, string>([
     EVENT_GROUPS.SUNDAY,
     "where event_time BETWEEN '2025-10-26 04:00:00' AND '2025-10-27 03:59:59.999'",
   ],
+]);
+
+const EVENT_GROUP_ROUTE_ADVANCER = new Map<string, string>([
+  [EVENT_GROUPS.THURSDAY, `/${EVENT_GROUPS.FRIDAY}`],
+  [EVENT_GROUPS.FRIDAY, `/${EVENT_GROUPS.SATURDAY}`],
+  [EVENT_GROUPS.SATURDAY, `/${EVENT_GROUPS.SUNDAY}`],
+  [EVENT_GROUPS.SUNDAY, ""],
 ]);
 
 const getRsvpsForGroup = async (
@@ -104,30 +112,14 @@ export const handler: Handlers<Data> = {
         }
       }
 
-      if (_ctx.params.event_group === EVENT_GROUPS.THURSDAY) {
+      if (EVENT_GROUP_ROUTE_ADVANCER.has(_ctx.params.event_group)) {
         const headers = new Headers();
-        headers.set("location", `/rsvp/${_ctx.params.group_id}/friday`);
-        return new Response(null, {
-          status: 303,
-          headers,
-        });
-      } else if (_ctx.params.event_group === EVENT_GROUPS.FRIDAY) {
-        const headers = new Headers();
-        headers.set("location", `/rsvp/${_ctx.params.group_id}/saturday`);
-        return new Response(null, {
-          status: 303,
-          headers,
-        });
-      } else if (_ctx.params.event_group === EVENT_GROUPS.SATURDAY) {
-        const headers = new Headers();
-        headers.set("location", `/rsvp/${_ctx.params.group_id}/sunday`);
-        return new Response(null, {
-          status: 303,
-          headers,
-        });
-      } else if (_ctx.params.event_group === EVENT_GROUPS.SUNDAY) {
-        const headers = new Headers();
-        headers.set("location", `/rsvp/${_ctx.params.group_id}`);
+        headers.set(
+          "location",
+          `/rsvp/${_ctx.params.group_id}${EVENT_GROUP_ROUTE_ADVANCER.get(
+            _ctx.params.event_group
+          )}`
+        );
         return new Response(null, {
           status: 303,
           headers,
@@ -188,6 +180,7 @@ export default function RsvpGroupEvent({ data, params }: PageProps<Data>) {
   return (
     <MainWrapper>
       <PageHeader>RSVP</PageHeader>
+      <PageImage src="/beverages.png" />
       <div class="w-full bg-eggplant-light rounded-sm shadow-inner">
         <span
           class={`block bg-eggplant h-2 rounded-sm ${
@@ -203,13 +196,6 @@ export default function RsvpGroupEvent({ data, params }: PageProps<Data>) {
       </div>
       {data.responses ? (
         <>
-          {/* params.event_group === EVENT_GROUPS.THURSDAY
-              ? "Thursday"
-              : params.event_group === EVENT_GROUPS.FRIDAY
-              ? "Friday"
-              : params.event_group === EVENT_GROUPS.SATURDAY
-              ? "Saturday"
-        : "Sunday" */}
           <form
             method="post"
             action={`/rsvp/${params.group_id}/${params.event_group}`}
