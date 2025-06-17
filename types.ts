@@ -13,6 +13,7 @@ export enum RSVP_EVENT_TYPE {
 export type RSVP_EVENT = {
   id: number;
   event_time: Date;
+  grouping: number;
   description: string;
   title: string;
   type: RSVP_EVENT_TYPE;
@@ -34,8 +35,14 @@ export type PERSON = {
 };
 
 export enum EVENT_GROUPS {
-  THURSDAY = "thursday",
-  FRIDAY = "friday",
-  SATURDAY = "saturday",
-  SUNDAY = "sunday",
+  FIRST = "first",
+  SECOND = "second",
+  THIRD = "third",
+  FOURTH = "fourth",
+  FIFTH = "fifth",
+  SIXTH = "sixth",
+  SEVENTH = "seventh",
+  EIGHTH = "eighth",
+  NINTH = "ninth",
+  TENTH = "tenth",
 }

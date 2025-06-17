@@ -4,8 +4,11 @@ import { OptionResponsesForm } from "../../../components/OptionResponsesForm.tsx
 import { PageHeader } from "../../../components/PageHeader.tsx";
 import { PageImage } from "../../../components/PageImage.tsx";
 import { RsvpEventDate } from "../../../components/RsvpEventDate.tsx";
+import { RsvpEventTime } from "../../../components/RsvpEventTime.tsx";
 import { TextResponsesForm } from "../../../components/TextResponsesForm.tsx";
 import { connection } from "../../../db.ts";
+import { getRsvpEventsForRsvpGroup } from "../../../queries/getRsvpEventsForRsvpGroup.ts";
+import { getRsvpsForGroup } from "../../../queries/getRsvpsForGroup.ts";
 import {
   EVENT_GROUPS,
   RSVP_EVENT_TYPE,
@@ -22,55 +25,20 @@ interface Data {
 
 // adding 4 hours b/c we're searching in utc
 const EVENT_GROUP_SELECTOR = new Map<string, string>([
-  [
-    EVENT_GROUPS.THURSDAY,
-    "where event_time BETWEEN '2025-10-23 04:00:00' AND '2025-10-24 03:59:59.999'",
-  ],
-  [
-    EVENT_GROUPS.FRIDAY,
-    "where event_time BETWEEN '2025-10-24 04:00:00' AND '2025-10-25 03:59:59.999'",
-  ],
-  [
-    EVENT_GROUPS.SATURDAY,
-    "where event_time BETWEEN '2025-10-25 04:00:00' AND '2025-10-26 03:59:59.999'",
-  ],
-  [
-    EVENT_GROUPS.SUNDAY,
-    "where event_time BETWEEN '2025-10-26 04:00:00' AND '2025-10-27 03:59:59.999'",
-  ],
+  [EVENT_GROUPS.FIRST, "rsvp_event.grouping = 0"],
+  [EVENT_GROUPS.SECOND, "rsvp_event.grouping = 1"],
+  [EVENT_GROUPS.THIRD, "rsvp_event.grouping = 2"],
+  [EVENT_GROUPS.FOURTH, "rsvp_event.grouping = 3"],
+  [EVENT_GROUPS.FIFTH, "rsvp_event.grouping = 4"],
 ]);
 
 const EVENT_GROUP_ROUTE_ADVANCER = new Map<string, string>([
-  [EVENT_GROUPS.THURSDAY, `/${EVENT_GROUPS.FRIDAY}`],
-  [EVENT_GROUPS.FRIDAY, `/${EVENT_GROUPS.SATURDAY}`],
-  [EVENT_GROUPS.SATURDAY, `/${EVENT_GROUPS.SUNDAY}`],
-  [EVENT_GROUPS.SUNDAY, ""],
+  [EVENT_GROUPS.FIRST, `/${EVENT_GROUPS.SECOND}`],
+  [EVENT_GROUPS.SECOND, `/${EVENT_GROUPS.THIRD}`],
+  [EVENT_GROUPS.THIRD, `/${EVENT_GROUPS.FOURTH}`],
+  [EVENT_GROUPS.FOURTH, `/${EVENT_GROUPS.FIFTH}`],
+  [EVENT_GROUPS.FIFTH, ""],
 ]);
-
-const getRsvpsForGroup = async (
-  id: number
-): Promise<{ rows: (PERSON & RSVP_RESPONSE)[] }> => {
-  const { rows } = await connection.queryObject<PERSON & RSVP_RESPONSE>(`
-  SELECT DISTINCT first_name, last_name, id, rsvp_event, options_response, text_response
-  FROM person
-  INNER JOIN rsvp_group_assignment
-  ON rsvp_group_assignment.person_id = person.id
-  LEFT JOIN rsvp_response
-  ON rsvp_response.person_id = person.id
-  WHERE rsvp_group_assignment.rsvp_group_id = ${id};
-  `);
-  return { rows };
-};
-
-const getRsvpEvents = async (
-  event_group: string
-): Promise<{ rows: RSVP_EVENT[] }> => {
-  const selector = EVENT_GROUP_SELECTOR.get(event_group);
-  const { rows } = await connection.queryObject<RSVP_EVENT>(`
-  SELECT * FROM rsvp_event ${selector} ORDER BY event_time;
-  `);
-  return { rows };
-};
 
 const updateOptionsRsvpResponse = async (
   eventId: string,
@@ -146,8 +114,9 @@ export const handler: Handlers<Data> = {
       }
 
       const { rows: rsvpRows } = await getRsvpsForGroup(groupId);
-      const { rows: rsvpEventRows } = await getRsvpEvents(
-        _ctx.params.event_group
+      const { rows: rsvpEventRows } = await getRsvpEventsForRsvpGroup(
+        groupId,
+        EVENT_GROUP_SELECTOR.get(_ctx.params.event_group)
       );
 
       return _ctx.render({
@@ -184,13 +153,15 @@ export default function RsvpGroupEvent({ data, params }: PageProps<Data>) {
       <div class="w-full bg-eggplant-light rounded-sm shadow-inner">
         <span
           class={`block bg-eggplant h-2 rounded-sm ${
-            params.event_group === EVENT_GROUPS.THURSDAY
-              ? "w-1/5"
-              : params.event_group === EVENT_GROUPS.FRIDAY
-              ? "w-2/5"
-              : params.event_group === EVENT_GROUPS.SATURDAY
-              ? "w-3/5"
-              : "w-4/5"
+            params.event_group === EVENT_GROUPS.FIRST
+              ? "w-1/6"
+              : params.event_group === EVENT_GROUPS.SECOND
+              ? "w-2/6"
+              : params.event_group === EVENT_GROUPS.THIRD
+              ? "w-3/6"
+              : params.event_group === EVENT_GROUPS.FOURTH
+              ? "w-4/6"
+              : "w-5/6"
           }`}
         />
       </div>
@@ -201,16 +172,15 @@ export default function RsvpGroupEvent({ data, params }: PageProps<Data>) {
             action={`/rsvp/${params.group_id}/${params.event_group}`}
             class="w-full"
           >
+            <RsvpEventDate date={data.events[0].event_time} class="text-2xl" />
             {data.events.map((event) => (
               <div
                 key={event.id}
                 class="flex flex-col py-4 items-center w-full"
               >
-                <h2 class="font-script font-bold text-6xl w-full text-center">
-                  {event.title}
-                </h2>
-                <div>{event.description}</div>
-                <RsvpEventDate date={event.event_time} />
+                <p class="font-script font-bold text-4xl">{event.title}</p>
+                <p class="text-2xl">{event.description}</p>
+                <RsvpEventTime date={event.event_time} class="text-2xl" />
                 {event.type === RSVP_EVENT_TYPE.OPTIONS ? (
                   <OptionResponsesForm
                     personIds={personIds}

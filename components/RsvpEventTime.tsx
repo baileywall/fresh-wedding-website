@@ -6,11 +6,11 @@ import timezone from "https://esm.sh/dayjs/plugin/timezone";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-export function RsvpEventDate(
+export function RsvpEventTime(
   props: JSX.HTMLAttributes<HTMLParagraphElement> & { date: Date }
 ) {
   const { date, ...rest } = props;
   return !date ? null : (
-    <p {...rest}>{dayjs(date).tz("America/New_York").format("dddd, MMMM D")}</p>
+    <p {...rest}>{dayjs(date).tz("America/New_York").format("h:mma")}</p>
   );
 }
