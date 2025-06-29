@@ -24,23 +24,26 @@ export function OptionResponsesForm(
             <div class="w-full flex justify-between items-center py-4">
               <div>{`${person.first_name} ${person.last_name}`}</div>
               <div class="flex-grow" />
-              {event.options.map((option, index) => (
-                <>
-                  <label
-                    for={`${event.id}:${person.id}:OPTIONS:${index}`}
-                    class="mx-2"
-                  >
-                    {option}
-                  </label>
-                  <input
-                    type="radio"
-                    id={`${event.id}:${person.id}:OPTIONS:${index}`}
-                    name={`${event.id}:${person.id}:OPTIONS`}
-                    value={index}
-                    checked={index === response?.options_response}
-                  />
-                </>
-              ))}
+              <div class="flex flex-col">
+                {event.options.map((option, index) => (
+                  <div class="self-start">
+                    <input
+                      type="radio"
+                      id={`${event.id}:${person.id}:OPTIONS:${index}`}
+                      name={`${event.id}:${person.id}:OPTIONS`}
+                      value={index}
+                      checked={index === response?.options_response}
+                      required
+                    />
+                    <label
+                      for={`${event.id}:${person.id}:OPTIONS:${index}`}
+                      class="mx-2"
+                    >
+                      {option}
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
             <hr class="border-tree-green" />
           </div>

@@ -9,9 +9,16 @@ export const getRsvpEventsForRsvpGroup = async (
   SELECT * FROM rsvp_event, (
     SELECT types from rsvp_group WHERE id = ${groupId}
   ) this_rsvp_group 
-  ${selector ? ` WHERE ${selector} AND ` : " WHERE "} 
-  rsvp_event.rsvp_group_types IS NULL 
-  OR this_rsvp_group.types && rsvp_event.rsvp_group_types 
+  ${
+    selector
+      ? ` WHERE ${selector} 
+        AND (
+          rsvp_event.rsvp_group_types IS NULL 
+          OR this_rsvp_group.types && rsvp_event.rsvp_group_types
+          )`
+      : ` WHERE rsvp_event.rsvp_group_types IS NULL
+        OR this_rsvp_group.types && rsvp_event.rsvp_group_types`
+  } 
   ORDER BY rsvp_event.grouping, rsvp_event.event_time;
   `);
   return { rows };

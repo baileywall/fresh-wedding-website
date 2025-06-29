@@ -13,7 +13,7 @@ export enum RSVP_EVENT_TYPE {
 export type RSVP_EVENT = {
   id: number;
   event_time: Date;
-  grouping: number;
+  grouping: EVENT_GROUPS;
   description: string;
   title: string;
   type: RSVP_EVENT_TYPE;

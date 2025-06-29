@@ -23,15 +23,6 @@ interface Data {
   events: RSVP_EVENT[];
 }
 
-// adding 4 hours b/c we're searching in utc
-const EVENT_GROUP_SELECTOR = new Map<string, string>([
-  [EVENT_GROUPS.FIRST, "rsvp_event.grouping = 0"],
-  [EVENT_GROUPS.SECOND, "rsvp_event.grouping = 1"],
-  [EVENT_GROUPS.THIRD, "rsvp_event.grouping = 2"],
-  [EVENT_GROUPS.FOURTH, "rsvp_event.grouping = 3"],
-  [EVENT_GROUPS.FIFTH, "rsvp_event.grouping = 4"],
-]);
-
 const EVENT_GROUP_ROUTE_ADVANCER = new Map<string, string>([
   [EVENT_GROUPS.FIRST, `/${EVENT_GROUPS.SECOND}`],
   [EVENT_GROUPS.SECOND, `/${EVENT_GROUPS.THIRD}`],
@@ -116,8 +107,22 @@ export const handler: Handlers<Data> = {
       const { rows: rsvpRows } = await getRsvpsForGroup(groupId);
       const { rows: rsvpEventRows } = await getRsvpEventsForRsvpGroup(
         groupId,
-        EVENT_GROUP_SELECTOR.get(_ctx.params.event_group)
+        `rsvp_event.grouping = '${_ctx.params.event_group}'`
       );
+
+      if (rsvpEventRows.length === 0) {
+        const headers = new Headers();
+        headers.set(
+          "location",
+          `/rsvp/${_ctx.params.group_id}${EVENT_GROUP_ROUTE_ADVANCER.get(
+            _ctx.params.event_group
+          )}`
+        );
+        return new Response(null, {
+          status: 303,
+          headers,
+        });
+      }
 
       return _ctx.render({
         responses: rsvpRows,
@@ -150,7 +155,7 @@ export default function RsvpGroupEvent({ data, params }: PageProps<Data>) {
     <MainWrapper>
       <PageHeader>RSVP</PageHeader>
       <PageImage src="/beverages.png" />
-      <div class="w-full bg-eggplant-light rounded-sm shadow-inner">
+      <div class="w-full md:w-3/4 bg-eggplant-light rounded-sm shadow-inner">
         <span
           class={`block bg-eggplant h-2 rounded-sm ${
             params.event_group === EVENT_GROUPS.FIRST
@@ -166,43 +171,38 @@ export default function RsvpGroupEvent({ data, params }: PageProps<Data>) {
         />
       </div>
       {data.responses ? (
-        <>
-          <form
-            method="post"
-            action={`/rsvp/${params.group_id}/${params.event_group}`}
-            class="w-full"
-          >
-            <RsvpEventDate date={data.events[0].event_time} class="text-2xl" />
-            {data.events.map((event) => (
-              <div
-                key={event.id}
-                class="flex flex-col py-4 items-center w-full"
-              >
-                <p class="font-script font-bold text-4xl">{event.title}</p>
-                <p class="text-2xl">{event.description}</p>
-                <RsvpEventTime date={event.event_time} class="text-2xl" />
-                {event.type === RSVP_EVENT_TYPE.OPTIONS ? (
-                  <OptionResponsesForm
-                    personIds={personIds}
-                    personIdToPerson={personIdToPerson}
-                    event={event}
-                    responses={data.responses}
-                  />
-                ) : (
-                  <TextResponsesForm
-                    personIds={personIds}
-                    personIdToPerson={personIdToPerson}
-                    event={event}
-                    responses={data.responses}
-                  />
-                )}
-              </div>
-            ))}
-            <button type="submit" class="text-blue-600 hover:underline text-xl">
-              Next
-            </button>
-          </form>
-        </>
+        <form
+          method="post"
+          action={`/rsvp/${params.group_id}/${params.event_group}`}
+          class="w-full md:w-3/4"
+        >
+          <RsvpEventDate date={data.events[0].event_time} class="text-4xl" />
+          {data.events.map((event) => (
+            <div key={event.id} class="flex flex-col py-4 items-center w-full">
+              <p class="font-script font-bold text-5xl">{event.title}</p>
+              <p class="text-2xl">{event.description}</p>
+              <RsvpEventTime date={event.event_time} class="text-2xl" />
+              {event.type === RSVP_EVENT_TYPE.OPTIONS ? (
+                <OptionResponsesForm
+                  personIds={personIds}
+                  personIdToPerson={personIdToPerson}
+                  event={event}
+                  responses={data.responses}
+                />
+              ) : (
+                <TextResponsesForm
+                  personIds={personIds}
+                  personIdToPerson={personIdToPerson}
+                  event={event}
+                  responses={data.responses}
+                />
+              )}
+            </div>
+          ))}
+          <button type="submit" class="text-blue-600 hover:underline text-xl">
+            Next
+          </button>
+        </form>
       ) : null}
     </MainWrapper>
   );

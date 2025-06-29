@@ -78,12 +78,27 @@ export default function RsvpGroup({ data, params }: PageProps<Data>) {
     })
   );
 
+  const orderedRsvpEvents = [
+    EVENT_GROUPS.FIRST,
+    EVENT_GROUPS.SECOND,
+    EVENT_GROUPS.THIRD,
+    EVENT_GROUPS.FOURTH,
+    EVENT_GROUPS.FIFTH,
+    EVENT_GROUPS.SIXTH,
+    EVENT_GROUPS.SEVENTH,
+    EVENT_GROUPS.EIGHTH,
+    EVENT_GROUPS.NINTH,
+    EVENT_GROUPS.TENTH,
+  ];
   const groupedRsvpEventRows: RSVP_EVENT[][] = [];
   data.events.forEach((row) => {
-    while (groupedRsvpEventRows.length - 1 < row.grouping) {
+    while (
+      groupedRsvpEventRows.length - 1 <
+      orderedRsvpEvents.indexOf(row.grouping)
+    ) {
       groupedRsvpEventRows.push([]);
     }
-    groupedRsvpEventRows[row.grouping].push(row);
+    groupedRsvpEventRows[orderedRsvpEvents.indexOf(row.grouping)].push(row);
   });
 
   return (
@@ -100,15 +115,16 @@ export default function RsvpGroup({ data, params }: PageProps<Data>) {
             groupedRsvpEvent.length > 0 && (
               <div
                 key={`grouped-rsvp-event-${index}`}
-                class={`${CARD_BACKGROUNDS[index % 3]} p-8 rounded-lg`}
+                //class={`${CARD_BACKGROUNDS[index % 3]} p-8 rounded-lg`}
+                class={`bg-eggplant-light p-8 rounded-lg`}
               >
                 <RsvpEventDate
                   date={groupedRsvpEvent[0].event_time}
-                  class="text-2xl"
+                  class="text-4xl"
                 />
                 {groupedRsvpEvent.map((event) => (
                   <div key={event.id} class="flex flex-col py-4 items-center">
-                    <p class="font-script font-bold text-4xl">{event.title}</p>
+                    <p class="font-script font-bold text-5xl">{event.title}</p>
                     <p class="text-2xl">{event.description}</p>
                     <RsvpEventTime date={event.event_time} class="text-2xl" />
                     {event.type === RSVP_EVENT_TYPE.OPTIONS ? (
