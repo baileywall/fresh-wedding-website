@@ -1,5 +1,6 @@
 import type { Handlers, PageProps } from "$fresh/server.ts";
 import { MainWrapper } from "../../../components/MainWrapper.tsx";
+import { MultiOptionResponsesForm } from "../../../components/MultiOptionResponsesForm.tsx";
 import { OptionResponsesForm } from "../../../components/OptionResponsesForm.tsx";
 import { PageHeader } from "../../../components/PageHeader.tsx";
 import { PageImage } from "../../../components/PageImage.tsx";
@@ -34,14 +35,17 @@ const EVENT_GROUP_ROUTE_ADVANCER = new Map<string, string>([
 const updateOptionsRsvpResponse = async (
   eventId: string,
   personId: string,
-  value: number
+  value: number[]
 ): Promise<{ rows: (PERSON & RSVP_RESPONSE)[] }> => {
-  const { rows } = await connection.queryObject<PERSON & RSVP_RESPONSE>(`
+  const { rows } = await connection.queryObject<PERSON & RSVP_RESPONSE>({
+    text: `
   INSERT INTO rsvp_response (rsvp_event, person_id, options_response) VALUES
-  (${eventId}, ${personId}, ${value})
-  ON CONFLICT (rsvp_event, person_id) DO UPDATE SET options_response = ${value}
+  (${eventId}, ${personId}, $1)
+  ON CONFLICT (rsvp_event, person_id) DO UPDATE SET options_response = $1
   RETURNING *;
-  `);
+  `,
+    args: [value],
+  });
   return { rows };
 };
 
@@ -62,12 +66,32 @@ const updateTextRsvpResponse = async (
 export const handler: Handlers<Data> = {
   async POST(req, _ctx) {
     try {
-      for (const curr of await req.formData()) {
-        const [eventId, personId, type] = curr[0].split(":");
-        if (type === RSVP_EVENT_TYPE.OPTIONS) {
-          await updateOptionsRsvpResponse(eventId, personId, Number(curr[1]));
+      const fields: Record<string, FormDataEntryValue[]> = {};
+
+      for (const [key, value] of await req.formData()) {
+        if (!fields[key]) {
+          fields[key] = [];
+        }
+        fields[key].push(value);
+      }
+
+      for (const key in fields) {
+        const curr = fields[key];
+        const [eventId, personId, type] = key.split(":");
+        if (
+          [
+            RSVP_EVENT_TYPE.OPTIONS.toString(),
+            RSVP_EVENT_TYPE.OPTIONS_OPTIONAL.toString(),
+            RSVP_EVENT_TYPE.MULTI_OPTIONS.toString(),
+          ].includes(type)
+        ) {
+          await updateOptionsRsvpResponse(
+            eventId,
+            personId,
+            curr.length > 1 ? curr.map((val) => Number(val)) : [Number(curr[0])]
+          );
         } else {
-          await updateTextRsvpResponse(eventId, personId, curr[1] as string);
+          await updateTextRsvpResponse(eventId, personId, curr[0] as string);
         }
       }
 
@@ -182,21 +206,36 @@ export default function RsvpGroupEvent({ data, params }: PageProps<Data>) {
               <p class="font-script font-bold text-5xl">{event.title}</p>
               <p class="text-2xl">{event.description}</p>
               <RsvpEventTime date={event.event_time} class="text-2xl" />
-              {event.type === RSVP_EVENT_TYPE.OPTIONS ? (
+              {[
+                RSVP_EVENT_TYPE.OPTIONS,
+                RSVP_EVENT_TYPE.OPTIONS_OPTIONAL,
+              ].includes(event.type) ? (
                 <OptionResponsesForm
                   personIds={personIds}
                   personIdToPerson={personIdToPerson}
                   event={event}
                   responses={data.responses}
+                  required={event.type === RSVP_EVENT_TYPE.OPTIONS}
                 />
-              ) : (
+              ) : [
+                  RSVP_EVENT_TYPE.TEXT,
+                  RSVP_EVENT_TYPE.TEXT_OPTIONAL,
+                ].includes(event.type) ? (
                 <TextResponsesForm
                   personIds={personIds}
                   personIdToPerson={personIdToPerson}
                   event={event}
                   responses={data.responses}
+                  required={event.type === RSVP_EVENT_TYPE.TEXT}
                 />
-              )}
+              ) : [RSVP_EVENT_TYPE.MULTI_OPTIONS].includes(event.type) ? (
+                <MultiOptionResponsesForm
+                  personIds={personIds}
+                  personIdToPerson={personIdToPerson}
+                  event={event}
+                  responses={data.responses}
+                />
+              ) : null}
             </div>
           ))}
           <button type="submit" class="text-blue-600 hover:underline text-xl">

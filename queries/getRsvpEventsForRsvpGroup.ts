@@ -19,7 +19,7 @@ export const getRsvpEventsForRsvpGroup = async (
       : ` WHERE rsvp_event.rsvp_group_types IS NULL
         OR this_rsvp_group.types && rsvp_event.rsvp_group_types`
   } 
-  ORDER BY rsvp_event.grouping, rsvp_event.event_time;
+  ORDER BY rsvp_event.grouping, rsvp_event.event_time, rsvp_event.order;
   `);
   return { rows };
 };

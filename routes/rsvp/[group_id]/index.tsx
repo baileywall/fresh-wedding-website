@@ -1,5 +1,6 @@
 import type { Handlers, PageProps } from "$fresh/server.ts";
 import { MainWrapper } from "../../../components/MainWrapper.tsx";
+import { MultiOptionResponses } from "../../../components/MultiOptionResponses.tsx";
 import { OptionResponses } from "../../../components/OptionResponses.tsx";
 import { PageHeader } from "../../../components/PageHeader.tsx";
 import { PageImage } from "../../../components/PageImage.tsx";
@@ -22,8 +23,6 @@ interface Data {
   responses: (PERSON & RSVP_RESPONSE)[];
   events: RSVP_EVENT[];
 }
-
-const CARD_BACKGROUNDS = ["bg-cadet", "bg-mountbatten-pink", "bg-tawny"];
 
 export const handler: Handlers<Data> = {
   async GET(_, _ctx) {
@@ -127,21 +126,34 @@ export default function RsvpGroup({ data, params }: PageProps<Data>) {
                     <p class="font-script font-bold text-5xl">{event.title}</p>
                     <p class="text-2xl">{event.description}</p>
                     <RsvpEventTime date={event.event_time} class="text-2xl" />
-                    {event.type === RSVP_EVENT_TYPE.OPTIONS ? (
+                    {[
+                      RSVP_EVENT_TYPE.OPTIONS,
+                      RSVP_EVENT_TYPE.OPTIONS_OPTIONAL,
+                    ].includes(event.type) ? (
                       <OptionResponses
                         personIds={personIds}
                         personIdToPerson={personIdToPerson}
                         event={event}
                         responses={data.responses}
                       />
-                    ) : (
+                    ) : [
+                        RSVP_EVENT_TYPE.TEXT,
+                        RSVP_EVENT_TYPE.TEXT_OPTIONAL,
+                      ].includes(event.type) ? (
                       <TextResponses
                         personIds={personIds}
                         personIdToPerson={personIdToPerson}
                         event={event}
                         responses={data.responses}
                       />
-                    )}
+                    ) : [RSVP_EVENT_TYPE.MULTI_OPTIONS].includes(event.type) ? (
+                      <MultiOptionResponses
+                        personIds={personIds}
+                        personIdToPerson={personIdToPerson}
+                        event={event}
+                        responses={data.responses}
+                      />
+                    ) : null}
                   </div>
                 ))}
               </div>

@@ -120,12 +120,12 @@ export default function Rsvp({ data }: PageProps<Data>) {
     <MainWrapper>
       <PageHeader>RSVP</PageHeader>
       <PageImage src="/beverages.png" />
-      <p class="text-3xl">Coming soon!</p>
-      <p class="hidden text-xl">
+      <p class="hidden text-3xl">Coming soon!</p>
+      <p class="text-xl">
         Please enter your first and last name. You will be able to RSVP for your
         whole group.
       </p>
-      <form class="hidden text-xl">
+      <form class="text-xl">
         <input
           type="text"
           name="n"

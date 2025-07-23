@@ -7,9 +7,10 @@ export function OptionResponsesForm(
     personIdToPerson: Map<number, PERSON>;
     event: RSVP_EVENT;
     responses: (PERSON & RSVP_RESPONSE)[];
+    required: boolean;
   }
 ) {
-  const { personIds, personIdToPerson, event, responses } = props;
+  const { personIds, personIdToPerson, event, responses, required } = props;
   return (
     <>
       {personIds.map((personId, index) => {
@@ -32,8 +33,8 @@ export function OptionResponsesForm(
                       id={`${event.id}:${person.id}:OPTIONS:${index}`}
                       name={`${event.id}:${person.id}:OPTIONS`}
                       value={index}
-                      checked={index === response?.options_response}
-                      required
+                      checked={index === response?.options_response?.[0]}
+                      required={required}
                     />
                     <label
                       for={`${event.id}:${person.id}:OPTIONS:${index}`}

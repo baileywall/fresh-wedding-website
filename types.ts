@@ -1,13 +1,17 @@
 export type RSVP_RESPONSE = {
   person_id: number;
   rsvp_event: number;
-  options_response: number | null;
+  options_response: number[] | null;
   text_response: string | null;
 };
 
 export enum RSVP_EVENT_TYPE {
   OPTIONS = "OPTIONS",
   TEXT = "TEXT",
+  MULTI_OPTIONS = "MULTI_OPTIONS",
+  OPTIONS_OPTIONAL = "OPTIONS_OPTIONAL",
+  TEXT_OPTIONAL = "TEXT_OPTIONAL",
+  INFO = "INFO",
 }
 
 export type RSVP_EVENT = {
@@ -18,6 +22,7 @@ export type RSVP_EVENT = {
   title: string;
   type: RSVP_EVENT_TYPE;
   options: string[];
+  order: number;
 };
 
 export type RSVP_GROUP = {
