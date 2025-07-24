@@ -10,9 +10,9 @@ export default function Registry() {
       <p class="text-xl">
         Your presence is the best present we could ask for and a gift is totally
         unnecessary. If you would like to go above and beyond, we would love for
-        you to donate to World Central Kitchen in our honor. We've also
-        registered at Crate and Barrel for anyone looking for ideas for a
-        physical gift.
+        you to donate to World Central Kitchen in our honor (please include our
+        email so we can thank you). We've also registered at Crate and Barrel
+        for anyone looking for ideas for a physical gift.
       </p>
       <div class="flex space-x-10">
         <a
