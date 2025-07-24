@@ -5,14 +5,15 @@
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $_layout from "./routes/_layout.tsx";
-import * as $details from "./routes/details.tsx";
 import * as $faq from "./routes/faq.tsx";
 import * as $index from "./routes/index.tsx";
+import * as $lodging_and_travel from "./routes/lodging-and-travel.tsx";
 import * as $photos from "./routes/photos.tsx";
 import * as $registry from "./routes/registry.tsx";
 import * as $rsvp_group_id_event_group_ from "./routes/rsvp/[group_id]/[event_group].tsx";
 import * as $rsvp_group_id_index from "./routes/rsvp/[group_id]/index.tsx";
 import * as $rsvp_index from "./routes/rsvp/index.tsx";
+import * as $schedule from "./routes/schedule.tsx";
 import * as $Hamburger from "./islands/Hamburger.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
@@ -21,14 +22,15 @@ const manifest = {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
     "./routes/_layout.tsx": $_layout,
-    "./routes/details.tsx": $details,
     "./routes/faq.tsx": $faq,
     "./routes/index.tsx": $index,
+    "./routes/lodging-and-travel.tsx": $lodging_and_travel,
     "./routes/photos.tsx": $photos,
     "./routes/registry.tsx": $registry,
     "./routes/rsvp/[group_id]/[event_group].tsx": $rsvp_group_id_event_group_,
     "./routes/rsvp/[group_id]/index.tsx": $rsvp_group_id_index,
     "./routes/rsvp/index.tsx": $rsvp_index,
+    "./routes/schedule.tsx": $schedule,
   },
   islands: {
     "./islands/Hamburger.tsx": $Hamburger,

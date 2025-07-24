@@ -20,8 +20,11 @@ export default function Hamburger(props: { pathname: string }) {
           <NavItem pathname={props.pathname} navPath="/">
             Home
           </NavItem>
-          <NavItem pathname={props.pathname} navPath="/details">
-            Details
+          <NavItem pathname={props.pathname} navPath="/schedule">
+            Schedule
+          </NavItem>
+          <NavItem pathname={props.pathname} navPath="/lodging-and-travel">
+            {"Lodging & Travel"}
           </NavItem>
           <NavItem pathname={props.pathname} navPath="/faq">
             FAQ

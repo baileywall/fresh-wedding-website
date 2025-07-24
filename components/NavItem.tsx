@@ -5,7 +5,7 @@ export function NavItem(
 ) {
   return (
     <a
-      class={`text-3xl ${
+      class={`text-3xl md:text-xl lg:text-3xl ${
         props.pathname === props.navPath ? "font-semibold underline" : ""
       }`}
       href={props.navPath}

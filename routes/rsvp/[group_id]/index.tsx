@@ -1,5 +1,5 @@
 import type { Handlers, PageProps } from "$fresh/server.ts";
-import { MainWrapper } from "../../../components/MainWrapper.tsx";
+import { WideWrapper } from "../../../components/WideWrapper.tsx";
 import { MultiOptionResponses } from "../../../components/MultiOptionResponses.tsx";
 import { OptionResponses } from "../../../components/OptionResponses.tsx";
 import { PageHeader } from "../../../components/PageHeader.tsx";
@@ -101,7 +101,7 @@ export default function RsvpGroup({ data, params }: PageProps<Data>) {
   });
 
   return (
-    <MainWrapper>
+    <WideWrapper>
       <PageHeader>RSVP</PageHeader>
       <PageImage src="/beverages.png" />
       <div>
@@ -166,6 +166,6 @@ export default function RsvpGroup({ data, params }: PageProps<Data>) {
       >
         Edit RSVP
       </a>
-    </MainWrapper>
+    </WideWrapper>
   );
 }

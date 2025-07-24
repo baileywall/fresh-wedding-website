@@ -7,15 +7,14 @@ export default function Registry() {
     <MainWrapper>
       <PageHeader>Registry</PageHeader>
       <PageImage src="/trees.png" />
-      <p class="text-3xl">Coming soon!</p>
-      <p class="hidden text-xl">
+      <p class="text-xl">
         Your presence is the best present we could ask for and a gift is totally
         unnecessary. If you would like to go above and beyond, we would love for
         you to donate to World Central Kitchen in our honor. We've also
         registered at Crate and Barrel for anyone looking for ideas for a
         physical gift.
       </p>
-      <div class="hidden flex space-x-10">
+      <div class="flex space-x-10">
         <a
           class="text-blue-600 hover:underline text-xl"
           href="https://donate.wck.org/give/499865/#!/donation/checkout"

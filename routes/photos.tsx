@@ -1,11 +1,11 @@
-import { MainWrapper } from "../components/MainWrapper.tsx";
+import { WideWrapper } from "../components/WideWrapper.tsx";
 import { PageHeader } from "../components/PageHeader.tsx";
 import { PageImage } from "../components/PageImage.tsx";
 import { Photo } from "../components/Photo.tsx";
 
 export default function Photos() {
   return (
-    <MainWrapper>
+    <WideWrapper>
       <PageHeader>Photos</PageHeader>
       <PageImage src="/mountains.png" />
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -54,6 +54,6 @@ export default function Photos() {
         <Photo alt="24_03 hot_waterfall" src="/photos/bc_47.jpeg" />
         <Photo alt="24_03 proposal_overlook" src="/photos/bc_49.jpeg" />
       </div>
-    </MainWrapper>
+    </WideWrapper>
   );
 }

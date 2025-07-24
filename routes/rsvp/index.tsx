@@ -1,5 +1,5 @@
 import type { Handlers, PageProps } from "$fresh/server.ts";
-import { MainWrapper } from "../../components/MainWrapper.tsx";
+import { WideWrapper } from "../../components/WideWrapper.tsx";
 import { PageHeader } from "../../components/PageHeader.tsx";
 import { PageImage } from "../../components/PageImage.tsx";
 import { connection } from "../../db.ts";
@@ -117,10 +117,9 @@ export const handler: Handlers<Data> = {
 
 export default function Rsvp({ data }: PageProps<Data>) {
   return (
-    <MainWrapper>
+    <WideWrapper>
       <PageHeader>RSVP</PageHeader>
       <PageImage src="/beverages.png" />
-      <p class="hidden text-3xl">Coming soon!</p>
       <p class="text-xl">
         Please enter your first and last name. You will be able to RSVP for your
         whole group.
@@ -175,6 +174,6 @@ export default function Rsvp({ data }: PageProps<Data>) {
           })}
         </>
       ) : null}
-    </MainWrapper>
+    </WideWrapper>
   );
 }

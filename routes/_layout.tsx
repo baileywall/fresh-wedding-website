@@ -14,8 +14,11 @@ export default function Layout({ Component, url }: PageProps) {
           <NavItem pathname={url.pathname} navPath="/">
             Home
           </NavItem>
-          <NavItem pathname={url.pathname} navPath="/details">
-            Details
+          <NavItem pathname={url.pathname} navPath="/schedule">
+            Schedule
+          </NavItem>
+          <NavItem pathname={url.pathname} navPath="/lodging-and-travel">
+            {"Lodging & Travel"}
           </NavItem>
           <NavItem pathname={url.pathname} navPath="/faq">
             FAQ
