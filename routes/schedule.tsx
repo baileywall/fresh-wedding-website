@@ -27,6 +27,12 @@ export default function Details() {
         very limited cell service at and near the venue, so please set your GPS
         before approaching!
       </p>
+      <p>
+        Google Maps currently shows that Brown Mountain Beach Road is closed and
+        suggests a much longer route than necessary, but the road is and will be
+        open! The drive time is 1.5 hours from the Charlotte airport and you can
+        use Waze to see the most direct route.
+      </p>
       <p class="text-4xl">Main events</p>
 
       <h2>Thursday, October 23</h2>

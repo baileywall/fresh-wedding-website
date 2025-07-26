@@ -83,6 +83,12 @@ export default function FAQ() {
         Airport.
       </p>
       <p>
+        Google Maps currently shows that Brown Mountain Beach Road is closed and
+        suggests a much longer route than necessary, but the road is and will be
+        open! The drive time is 1.5 hours from the Charlotte airport and you can
+        use Waze to see the most direct route.
+      </p>
+      <p>
         There is no Uber/Lyft availability in the area. We recommend carpools if
         possible and getting a rental car if arriving at the airport - there is
         free parking at BMBR. There are also a few local taxi services, such as

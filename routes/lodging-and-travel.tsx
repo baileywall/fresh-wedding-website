@@ -12,8 +12,14 @@ export default function LodgingAndTravel() {
         Brown Mountain Beach Resort is located at 6785 Brown Mountain Beach Rd,
         Lenoir, NC 28645, right beside Pisgah National Forest. It's a 1.5 hour
         drive from both the Charlotte Douglas International Airport and the
-        Asheville Regional Airport. Google Maps says that the most efficient
-        road to the venue is closed; this will not be the case in late October.
+        Asheville Regional Airport.
+      </p>
+
+      <p>
+        Google Maps currently shows that Brown Mountain Beach Road is closed and
+        suggests a much longer route than necessary, but the road is and will be
+        open! The drive time is 1.5 hours from the Charlotte airport and you can
+        use Waze to see the most direct route.
       </p>
 
       <p class="font-bold">
