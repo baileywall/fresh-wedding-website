@@ -6,7 +6,7 @@ export default function LodgingAndTravel() {
   return (
     <MainWrapper>
       <PageHeader>Lodging and Travel</PageHeader>
-      <PageImage src="/food.png" />
+      <PageImage src="/venue.png" />
 
       <p>
         Brown Mountain Beach Resort is located at 6785 Brown Mountain Beach Rd,
