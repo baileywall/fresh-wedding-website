@@ -55,10 +55,15 @@ export default function LodgingAndTravel() {
       </p>
 
       <p>
-        Other lodging options include our hotel block at the nearby Hampton Inn
-        in Lenoir (we will provide a link as soon as possible, but for now you
-        can call and ask for our room block), as well as some great AirBnB /
-        VRBO options in the surrounding area (e.g., Lake James, Lenoir)
+        Other lodging options include{" "}
+        <a
+          href="https://www.hilton.com/en/attend-my-event/wallplazaweddingoct2025/"
+          class="text-blue-600"
+        >
+          our hotel block
+        </a>{" "}
+        at the nearby Hampton Inn in Lenoir, as well as some great AirBnB / VRBO
+        options in the surrounding area (e.g., Lake James, Lenoir)
       </p>
     </MainWrapper>
   );
